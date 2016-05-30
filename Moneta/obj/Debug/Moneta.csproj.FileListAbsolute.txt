@@ -1,0 +1,9 @@
+C:\Projects\C#\Moneta\bin\Debug\Moneta.exe.config
+C:\Projects\C#\Moneta\bin\Debug\Moneta.exe
+C:\Projects\C#\Moneta\bin\Debug\Moneta.pdb
+C:\Projects\C#\Moneta\obj\Debug\Moneta.exe
+C:\Projects\C#\Moneta\obj\Debug\Moneta.pdb
+C:\Projects\C#\Moneta\obj\Debug\Moneta.Properties.Resources.resources
+C:\Projects\C#\Moneta\obj\Debug\Moneta.csproj.GenerateResource.Cache
+C:\Projects\C#\Moneta\bin\Debug\Newtonsoft.Json.dll
+C:\Projects\C#\Moneta\bin\Debug\Newtonsoft.Json.xml
