@@ -150,20 +150,20 @@ namespace Moneta
 
                 CreateProfileRequest request = new CreateProfileRequest();
                 List<KeyValueApprovedAttribute> mntAttributes = new List<KeyValueApprovedAttribute>();
-                KeyValueApprovedAttribute monetaAtribute = new KeyValueApprovedAttribute();
 
+                KeyValueApprovedAttribute monetaAtribute = new KeyValueApprovedAttribute();
                 monetaAtribute.key = "first_name";
                 monetaAtribute.value = firstName;
                 mntAttributes.Add(monetaAtribute);
-
+                monetaAtribute = new KeyValueApprovedAttribute();
                 monetaAtribute.key = "last_name";
                 monetaAtribute.value = lastName;
                 mntAttributes.Add(monetaAtribute);
-
+                monetaAtribute = new KeyValueApprovedAttribute();
                 monetaAtribute.key = "email_for_notifications";
                 monetaAtribute.value = email;
                 mntAttributes.Add(monetaAtribute);
-
+                monetaAtribute = new KeyValueApprovedAttribute();
                 monetaAtribute.key = "sex";
                 monetaAtribute.value = gender;
                 mntAttributes.Add(monetaAtribute);
@@ -173,6 +173,7 @@ namespace Moneta
                 String mntPrototype = basicSettings.GetSetting("BasicSettings", "monetasdk_prototype_user_unit_id");
                 if (String.Compare(mntPrototype, "") != 0) {
                     request.unitId = (long) Convert.ToDouble(mntPrototype);
+                    request.unitIdSpecified = true;
                 }
 
                 request.profileType = ProfileType.client;
@@ -204,20 +205,20 @@ namespace Moneta
 
                 EditProfileRequest request = new EditProfileRequest();
                 List<KeyValueApprovedAttribute> mntAttributes = new List<KeyValueApprovedAttribute>();
-                KeyValueApprovedAttribute monetaAtribute = new KeyValueApprovedAttribute();
 
+                KeyValueApprovedAttribute monetaAtribute = new KeyValueApprovedAttribute();
                 monetaAtribute.key = "first_name";
                 monetaAtribute.value = firstName;
                 mntAttributes.Add(monetaAtribute);
-
+                monetaAtribute = new KeyValueApprovedAttribute();
                 monetaAtribute.key = "last_name";
                 monetaAtribute.value = lastName;
                 mntAttributes.Add(monetaAtribute);
-
+                monetaAtribute = new KeyValueApprovedAttribute();
                 monetaAtribute.key = "email_for_notifications";
                 monetaAtribute.value = email;
                 mntAttributes.Add(monetaAtribute);
-
+                monetaAtribute = new KeyValueApprovedAttribute();
                 monetaAtribute.key = "sex";
                 monetaAtribute.value = gender;
                 mntAttributes.Add(monetaAtribute);
@@ -301,6 +302,71 @@ namespace Moneta
             return result;
         }
 
+
+        // CreateOrganizationProfile
+        public MonetaSdkResult sdkMonetaCreateOrganizationProfile(string inn, string url, string rf_resident, string alias, string organization_name, 
+            string organization_name_short, string contact_email)
+        {
+            MonetaSdkResult result = new MonetaSdkResult();
+
+            try
+            {
+                CreateProfileRequest request = new CreateProfileRequest();
+                List<KeyValueApprovedAttribute> mntAttributes = new List<KeyValueApprovedAttribute>();
+
+                KeyValueApprovedAttribute monetaAtribute = new KeyValueApprovedAttribute();
+                monetaAtribute.key = "inn";
+                monetaAtribute.value = inn;
+                mntAttributes.Add(monetaAtribute);
+                monetaAtribute = new KeyValueApprovedAttribute();
+                monetaAtribute.key = "url";
+                monetaAtribute.value = url;
+                mntAttributes.Add(monetaAtribute);
+                monetaAtribute = new KeyValueApprovedAttribute();
+                monetaAtribute.key = "rf_resident";
+                monetaAtribute.value = rf_resident;
+                mntAttributes.Add(monetaAtribute);
+                monetaAtribute = new KeyValueApprovedAttribute();
+                monetaAtribute.key = "alias";
+                monetaAtribute.value = alias;
+                mntAttributes.Add(monetaAtribute);
+                monetaAtribute = new KeyValueApprovedAttribute();
+                monetaAtribute.key = "organization_name";
+                monetaAtribute.value = organization_name;
+                mntAttributes.Add(monetaAtribute);
+                monetaAtribute = new KeyValueApprovedAttribute();
+                monetaAtribute.key = "organization_name_short";
+                monetaAtribute.value = organization_name_short;
+                mntAttributes.Add(monetaAtribute);
+                monetaAtribute = new KeyValueApprovedAttribute();
+                monetaAtribute.key = "contact_email";
+                monetaAtribute.value = contact_email;
+                mntAttributes.Add(monetaAtribute);
+
+                request.profile = mntAttributes.ToArray();
+
+                String mntPrototype = basicSettings.GetSetting("BasicSettings", "monetasdk_prototype_user_unit_id");
+                if (String.Compare(mntPrototype, "") != 0)
+                {
+                    request.unitId = (long)Convert.ToDouble(mntPrototype);
+                    request.unitIdSpecified = true;
+                    Console.WriteLine("unitId: " + mntPrototype);
+                }
+
+                request.profileType = ProfileType.organization;
+
+                response = client.CreateProfile(request);
+
+                result = prepareResult();
+            }
+            catch (Exception e)
+            {
+                result.error = true;
+                result.errorMessage = e.Message;
+            }
+
+            return result;
+        }
 
 
         // prepare result
