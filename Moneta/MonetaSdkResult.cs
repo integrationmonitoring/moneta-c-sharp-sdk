@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Moneta
 {
@@ -8,6 +9,9 @@ namespace Moneta
         public String errorMessage = null;
 	    public String xmlData = null;
         public String jsonData = null;
-
+        // attributes
+        public Dictionary<string, string> attributes = new Dictionary<string, string>();
+        // pure data
+        public Object response;
     }
 }

@@ -8915,7 +8915,7 @@ namespace Moneta.MonetaWSDL {
         
         private long totalSizeField;
         
-        private KeyValueApprovedAttribute[][] profileField;
+        private KeyValueApprovedAttribute[] profileField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
@@ -8979,8 +8979,8 @@ namespace Moneta.MonetaWSDL {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlArrayAttribute(Order=5)]
-        [System.Xml.Serialization.XmlArrayItemAttribute("attribute", typeof(KeyValueApprovedAttribute[]), IsNullable=false)]
-        public KeyValueApprovedAttribute[][] profile {
+        [System.Xml.Serialization.XmlArrayItemAttribute("attribute", typeof(KeyValueApprovedAttribute), IsNullable=false)]
+        public KeyValueApprovedAttribute[] profile {
             get {
                 return this.profileField;
             }
