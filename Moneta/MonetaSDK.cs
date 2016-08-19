@@ -31,6 +31,7 @@ namespace Moneta
 
             client.ClientCredentials.UserName.UserName = basicSettings.GetSetting("BasicSettings", "monetasdk_account_username");
             client.ClientCredentials.UserName.Password = basicSettings.GetSetting("BasicSettings", "monetasdk_account_password");
+
         }
 
 

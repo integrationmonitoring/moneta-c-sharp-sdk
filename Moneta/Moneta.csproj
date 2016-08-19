@@ -89,6 +89,12 @@
     <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.AccountRelation.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.AccountStatementResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.AccountStatementResponse1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.ApprovePhoneApplyCodeResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -123,6 +129,12 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.CancelTransactionResponse1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.CheckProfileResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.CheckProfileResponse1.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.ConfirmPersonificationResponse.datasource">
@@ -260,6 +272,9 @@
     <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.FindProfileInfoResponse1.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.FindReportsResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.ForecastTransactionResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -320,6 +335,18 @@
     <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.LegalInformation.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.LoginResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.LoginResponse1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.LogoutResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.LogoutResponse1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.OperationInfoBatchResponseType.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -332,10 +359,19 @@
     <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.PaymentResponse1.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.PaymentSystemInfoComplexType.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.PaymentSystemInfoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.RefundResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.RefundResponse1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.Report.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.SaveAccountRelationResponse.datasource">
@@ -368,6 +404,9 @@
     <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.UploadProfileDocumentFileResponse1.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.VerifyPaymentBatchResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.VerifyPaymentResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -386,6 +425,9 @@
     <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.VerifyTransactionResponse1.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.VerifyTransactionResponseType.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\MonetaWSDL\Moneta.MonetaWSDL.VerifyTransferResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -396,21 +438,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadataStorage Include="Service References\MonetaWSDL\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\MonetaWSDL\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\MonetaWSDL\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\MonetaWSDL\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -429,6 +456,21 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\MonetaWSDL\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\MonetaWSDL\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\MonetaWSDL\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\MonetaWSDL\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

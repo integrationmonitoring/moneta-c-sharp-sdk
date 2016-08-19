@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="7960d582-97f3-4761-824f-fa1a9a53e0d0" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="9f6511e4-93a6-4b58-bcb5-80e3f78a31fe" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -22,7 +22,7 @@
     <MetadataSource Address="https://demo.moneta.ru/services.wsdl" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="services.wsdl" MetadataType="Wsdl" ID="7c0bcaf9-8f0d-48ad-b275-af673d532886" SourceId="1" SourceUrl="https://demo.moneta.ru/services.wsdl" />
+    <MetadataFile FileName="services.wsdl" MetadataType="Wsdl" ID="68d8c449-9c95-4342-a212-5aeadd1f257e" SourceId="1" SourceUrl="https://demo.moneta.ru/services.wsdl" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

@@ -12,12 +12,13 @@ namespace Moneta
             // UNCOMMENT TO EXECUTE:
 
             // call OperationInfo
-            // MonetaSdkResult result1 = monetaSDK.sdkMonetaOperationInfo(375864);
-            // Console.WriteLine("Error: " + result1.errorMessage);
-            // Console.WriteLine("Result: " + result1.jsonData);
+            MonetaSdkResult result1 = monetaSDK.sdkMonetaOperationInfo(375864);
+            Console.WriteLine("Error: " + result1.errorMessage);
+            Console.WriteLine("Result: " + result1.jsonData);
 
             // call FindAccountById
             // MonetaSdkResult result2 = monetaSDK.sdkMonetaFindAccountById(11493408);
+            // Console.WriteLine("Error: " + result2.errorMessage);
             // Console.WriteLine("Result: " + result2.jsonData);
 
             // GetProfileInfo
@@ -29,7 +30,7 @@ namespace Moneta
             // Console.WriteLine("Error: " + result5.errorMessage);
             // Console.WriteLine("Result: " + result5.xmlData);
 
-            MonetaSdkResult result4 = monetaSDK.sdkMonetaFindProfileInfo(44281, 44569);
+            // MonetaSdkResult result4 = monetaSDK.sdkMonetaFindProfileInfo(44281, 44569);
 
             // MonetaSdkResult result6 = monetaSDK.sdkMonetaCreateProfileDocumentRequest(44569);
             // Console.WriteLine("Error: " + result6.errorMessage);

@@ -102,6 +102,12 @@
               <xsd:documentation xml:lang="en">Transaction is frozen.</xsd:documentation>
             </xsd:annotation>
           </xsd:enumeration>
+          <xsd:enumeration value="TAKENOUT">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Средства списаны.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Debited.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:enumeration>
         </xsd:restriction>
       </xsd:simpleType>
       <xsd:simpleType name="OperationStatusState">
@@ -329,10 +335,10 @@
           </xsd:extension>
         </xsd:complexContent>
       </xsd:complexType>
-      <xsd:complexType name="TransactionBatchRequestType">
+      <xsd:complexType name="EntityBatchRequestType">
         <xsd:annotation>
-          <xsd:documentation xml:lang="ru">Тип, описывающий параметры операции в запросах в пакетном режиме.</xsd:documentation>
-          <xsd:documentation xml:lang="en">Transaction parameters for requests in batch mode.</xsd:documentation>
+          <xsd:documentation xml:lang="ru">Тип, описывающий параметры в запросах в пакетном режиме.</xsd:documentation>
+          <xsd:documentation xml:lang="en">Parameters for requests in batch mode.</xsd:documentation>
         </xsd:annotation>
         <xsd:complexContent mixed="false">
           <xsd:extension base="tns:Entity">
@@ -353,17 +359,22 @@
                     </ul>
                   </xsd:documentation>
                   <xsd:documentation xml:lang="en">
-                                Indicates whether to merge all transfers during batch processing into a single
-                                transaction. Valid values are:
-                                <ul><li><b>True</b>. If an error occurs, all of the transactions are canceled. Only
+                    <p>Indicates whether to merge all transfers during batch processing into a single transaction. Valid values are: </p>
+                    <ul>
+                      <li>
+                        <b>True</b>. If an error occurs, all of the transactions are canceled. Only
                                         transactions with MONETA.RU accounts are supported. Withdrawals to third-party
                                         payment systems are not allowed.
-                                    </li><li><b>False</b>. If an error occurs, MONETA.RU cancels only the current
+                                    </li>
+                      <li>
+                        <b>False</b>. If an error occurs, MONETA.RU cancels only the current
                                         transaction. Processed transactions are not rolled back. Any transactions that
                                         are supported by the Transfer request are allowed. If you set the exitOnFailure
                                         element to false, the Merchant API skips the current transaction and continues
                                         processing other transactions.
-                                    </li></ul></xsd:documentation>
+                                    </li>
+                    </ul>
+                  </xsd:documentation>
                 </xsd:annotation>
               </xsd:element>
               <xsd:element name="exitOnFailure" type="xsd:boolean">
@@ -378,6 +389,18 @@
                             </xsd:documentation>
                 </xsd:annotation>
               </xsd:element>
+            </xsd:sequence>
+          </xsd:extension>
+        </xsd:complexContent>
+      </xsd:complexType>
+      <xsd:complexType name="TransactionBatchRequestType">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">Тип, описывающий параметры операции в запросах в пакетном режиме.</xsd:documentation>
+          <xsd:documentation xml:lang="en">Transaction parameters for requests in batch mode.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent mixed="false">
+          <xsd:extension base="tns:EntityBatchRequestType">
+            <xsd:sequence>
               <xsd:element minOccurs="1" maxOccurs="unbounded" name="transaction" type="tns:TransactionRequestType">
                 <xsd:annotation>
                   <xsd:documentation xml:lang="ru">
@@ -600,47 +623,8 @@
           <xsd:documentation xml:lang="en">Transaction parameters for requests in batch mode.</xsd:documentation>
         </xsd:annotation>
         <xsd:complexContent mixed="false">
-          <xsd:extension base="tns:Entity">
+          <xsd:extension base="tns:EntityBatchRequestType">
             <xsd:sequence>
-              <xsd:element name="transactional" type="xsd:boolean">
-                <xsd:annotation>
-                  <xsd:documentation xml:lang="ru">
-                    <p>Флаг, указывающий выполнять ли все денежные переводы в одной транзакции. Если transactional = true, то:</p>
-                    <ul>
-                      <li>При возникновении ошибки все проведенные операции будут отменены.</li>
-                      <li>Можно проводить только операции со счетами монеты. Нельзя выводить деньги на внешние платежные системы.</li>
-                    </ul>
-                    <p>Если transactional = false, то:</p>
-                    <ul>
-                      <li>При возникновении ошибки все проведенные операции будут сохранены.</li>
-                      <li>Можно проводить любые операции, которые доступны в TransferRequest.</li>
-                      <li>Если выставить флаг exitOnFailure = false, то при возникновении ошибки можно пропустить операцию и продолжить выполнение операций дальше.</li>
-                    </ul>
-                  </xsd:documentation>
-                  <xsd:documentation xml:lang="en">
-                                Indicates whether to merge all transfers during batch processing into a single
-                                transaction. Valid values are:
-                                <ul><li><b>True</b>. If an error occurs, all of the transactions are canceled. Only
-                                        transactions with MONETA.RU accounts are supported. Withdrawals to third-party
-                                        payment systems are not allowed.
-                                    </li><li><b>False</b>. If an error occurs, MONETA.RU cancels only the current
-                                        transaction. Processed transactions are not rolled back. Any transactions that
-                                        are supported by the Transfer request are allowed. If you set the exitOnFailure
-                                        element to false, the Merchant API skips the current transaction and continues
-                                        processing other transactions.
-                                    </li></ul></xsd:documentation>
-                </xsd:annotation>
-              </xsd:element>
-              <xsd:element name="exitOnFailure" type="xsd:boolean">
-                <xsd:annotation>
-                  <xsd:documentation xml:lang="ru">
-                                Флаг, указывающий прерывать ли выполнение пакета операций, если произошла ошибка. Используется только при transactional = false.
-                            </xsd:documentation>
-                  <xsd:documentation xml:lang="en">
-                                If the transactional element is set to false, indicates whether to stop batch processing if an error occurs in one of the transactions.
-                            </xsd:documentation>
-                </xsd:annotation>
-              </xsd:element>
               <xsd:element minOccurs="1" maxOccurs="unbounded" name="transaction" type="tns:PaymentRequestType">
                 <xsd:annotation>
                   <xsd:documentation xml:lang="ru">
@@ -714,48 +698,8 @@
           <xsd:documentation xml:lang="en">Transaction parameters for requests in batch mode.</xsd:documentation>
         </xsd:annotation>
         <xsd:complexContent mixed="false">
-          <xsd:extension base="tns:Entity">
+          <xsd:extension base="tns:EntityBatchRequestType">
             <xsd:sequence>
-              <xsd:element name="transactional" type="xsd:boolean">
-                <xsd:annotation>
-                  <xsd:documentation xml:lang="ru">
-                    <p>Флаг, указывающий выполнять ли все денежные переводы в одной транзакции. Если transactional = true, то:</p>
-                    <ul>
-                      <li>При возникновении ошибки все проведенные операции будут отменены.</li>
-                      <li>Можно проводить только операции со счетами монеты. Нельзя выводить деньги на внешние платежные системы.</li>
-                    </ul>
-                    <p>Если transactional = false, то:</p>
-                    <ul>
-                      <li>При возникновении ошибки все проведенные операции будут сохранены.</li>
-                      <li>Можно проводить любые операции, которые доступны в TransferRequest.</li>
-                      <li>Если выставить флаг exitOnFailure = false, то при возникновении ошибки можно пропустить операцию и продолжить выполнение операций дальше.</li>
-                    </ul>
-                  </xsd:documentation>
-                  <xsd:documentation xml:lang="en">
-                    <p>Indicates whether to merge all transfers during batch processing into a single transaction. Valid values are:</p>
-                    <ul>
-                      <li>
-                        <b>True</b>. If an error occurs, all of the transactions are canceled. Only
-                                        transactions with MONETA.RU accounts are supported. Withdrawals to third-party
-                                        payment systems are not allowed.
-                                    </li>
-                      <li>
-                        <b>False</b>. If an error occurs, MONETA.RU cancels only the current
-                                        transaction. Processed transactions are not rolled back. Any transactions that
-                                        are supported by the Transfer request are allowed. If you set the exitOnFailure
-                                        element to false, the Merchant API skips the current transaction and continues
-                                        processing other transactions.
-                                    </li>
-                    </ul>
-                  </xsd:documentation>
-                </xsd:annotation>
-              </xsd:element>
-              <xsd:element name="exitOnFailure" type="xsd:boolean">
-                <xsd:annotation>
-                  <xsd:documentation xml:lang="ru">Флаг, указывающий прерывать ли выполнение пакета операций, если произошла ошибка. Используется только при transactional = false.</xsd:documentation>
-                  <xsd:documentation xml:lang="en">If the transactional element is set to false, indicates whether to stop batch processing if an error occurs in one of the transactions.</xsd:documentation>
-                </xsd:annotation>
-              </xsd:element>
               <xsd:element minOccurs="1" maxOccurs="unbounded" name="transaction" type="tns:AuthoriseTransactionRequestType">
                 <xsd:annotation>
                   <xsd:documentation xml:lang="ru">Набор операций, которые необходимо выполнить в одном пакете. Операции выполняются в том порядке, в котором они переданы в запросе.</xsd:documentation>
@@ -861,52 +805,8 @@
           <xsd:documentation xml:lang="en">Request parameters for confirming transactions in batch mode.</xsd:documentation>
         </xsd:annotation>
         <xsd:complexContent mixed="false">
-          <xsd:extension base="tns:Entity">
+          <xsd:extension base="tns:EntityBatchRequestType">
             <xsd:sequence>
-              <xsd:element name="transactional" type="xsd:boolean">
-                <xsd:annotation>
-                  <xsd:documentation xml:lang="ru">
-                    <p>Флаг, указывающий выполнять ли все денежные переводы в одной транзакции. Если transactional = true, то:</p>
-                    <ul>
-                      <li>При возникновении ошибки все проведенные операции будут отменены.</li>
-                      <li>Можно проводить только операции со счетами монеты. Нельзя выводить деньги на внешние платежные системы.</li>
-                    </ul>
-                    <p>Если transactional = false, то:</p>
-                    <ul>
-                      <li>При возникновении ошибки все проведенные операции будут сохранены.</li>
-                      <li>Можно проводить любые операции, которые доступны в TransferRequest.</li>
-                      <li>Если выставить флаг exitOnFailure = false, то при возникновении ошибки можно пропустить операцию и продолжить выполнение операций дальше.</li>
-                    </ul>
-                  </xsd:documentation>
-                  <xsd:documentation xml:lang="en">
-                    <p>Indicates whether to merge all transfers during batch processing into a single transaction. Valid values are:</p>
-                    <ul>
-                      <li>
-                        <b>True</b>. If an error occurs, all of the transactions are canceled. Only
-                                        transactions with MONETA.RU accounts are supported. Withdrawals to third-party
-                                        payment systems are not allowed.
-                                    </li>
-                      <li>
-                        <b>False</b>. If an error occurs, MONETA.RU cancels only the current
-                                        transaction. Processed transactions are not rolled back. Any transactions that
-                                        are supported by the Transfer request are allowed. If you set the exitOnFailure
-                                        element to false, the Merchant API skips the current transaction and continues
-                                        processing other transactions.
-                                    </li>
-                    </ul>
-                  </xsd:documentation>
-                </xsd:annotation>
-              </xsd:element>
-              <xsd:element name="exitOnFailure" type="xsd:boolean">
-                <xsd:annotation>
-                  <xsd:documentation xml:lang="ru">
-                                Флаг, указывающий прерывать ли выполнение пакета операций, если произошла ошибка. Используется только при transactional = false.
-                            </xsd:documentation>
-                  <xsd:documentation xml:lang="en">
-                                If the transactional element is set to false, indicates whether to stop batch processing if an error occurs in one of the transactions.
-                            </xsd:documentation>
-                </xsd:annotation>
-              </xsd:element>
               <xsd:element minOccurs="1" maxOccurs="unbounded" name="transaction" type="tns:ConfirmTransactionRequestType">
                 <xsd:annotation>
                   <xsd:documentation xml:lang="ru">
@@ -973,52 +873,8 @@
           <xsd:documentation xml:lang="en">Request parameters for canceling transactions in  batch mode.</xsd:documentation>
         </xsd:annotation>
         <xsd:complexContent mixed="false">
-          <xsd:extension base="tns:Entity">
+          <xsd:extension base="tns:EntityBatchRequestType">
             <xsd:sequence>
-              <xsd:element name="transactional" type="xsd:boolean">
-                <xsd:annotation>
-                  <xsd:documentation xml:lang="ru">
-                    <p>Флаг, указывающий выполнять ли все денежные переводы в одной транзакции. Если transactional = true, то:</p>
-                    <ul>
-                      <li>При возникновении ошибки все проведенные операции будут отменены.</li>
-                      <li>Можно проводить только операции со счетами монеты. Нельзя выводить деньги на внешние платежные системы.</li>
-                    </ul>
-                    <p>Если transactional = false, то:</p>
-                    <ul>
-                      <li>При возникновении ошибки все проведенные операции будут сохранены.</li>
-                      <li>Можно проводить любые операции, которые доступны в TransferRequest.</li>
-                      <li>Если выставить флаг exitOnFailure = false, то при возникновении ошибки можно пропустить операцию и продолжить выполнение операций дальше.</li>
-                    </ul>
-                  </xsd:documentation>
-                  <xsd:documentation xml:lang="en">
-                    <p>Indicates whether to merge all transfers during batch processing into a single transaction. Valid values are:</p>
-                    <ul>
-                      <li>
-                        <b>True</b>. If an error occurs, all of the transactions are canceled. Only
-                                        transactions with MONETA.RU accounts are supported. Withdrawals to third-party
-                                        payment systems are not allowed.
-                                    </li>
-                      <li>
-                        <b>False</b>. If an error occurs, MONETA.RU cancels only the current
-                                        transaction. Processed transactions are not rolled back. Any transactions that
-                                        are supported by the Transfer request are allowed. If you set the exitOnFailure
-                                        element to false, the Merchant API skips the current transaction and continues
-                                        processing other transactions.
-                                    </li>
-                    </ul>
-                  </xsd:documentation>
-                </xsd:annotation>
-              </xsd:element>
-              <xsd:element name="exitOnFailure" type="xsd:boolean">
-                <xsd:annotation>
-                  <xsd:documentation xml:lang="ru">
-                                Флаг, указывающий прерывать ли выполнение пакета операций, если произошла ошибка. Используется только при transactional = false.
-                            </xsd:documentation>
-                  <xsd:documentation xml:lang="en">
-                                If the transactional element is set to false, indicates whether to stop batch processing if an error occurs in one of the transactions.
-                            </xsd:documentation>
-                </xsd:annotation>
-              </xsd:element>
               <xsd:element minOccurs="1" maxOccurs="unbounded" name="transaction" type="tns:CancelTransactionRequestType">
                 <xsd:annotation>
                   <xsd:documentation xml:lang="ru">
@@ -1161,6 +1017,227 @@
           </xsd:extension>
         </xsd:complexContent>
       </xsd:complexType>
+      <xsd:element name="PaymentSystemInfoRequest">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">Запрос информации об платежных системах.</xsd:documentation>
+          <xsd:documentation xml:lang="en">Request information about payments system</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="accountId" type="tns:AccountId">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="ru">
+                  <p>Номер счета в системе МОНЕТА.РУ.</p>
+                </xsd:documentation>
+                <xsd:documentation xml:lang="en">
+                  <p>MONETA.RU account number.</p>
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="amount" type="tns:Money" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="PaymentSystemInfoResponse">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">Ответ, который приходит на запрос PaymentSystemInfoRequest.</xsd:documentation>
+          <xsd:documentation xml:lang="en">Response to a request PaymentSystemInfoRequest.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="unbounded" name="items" type="tns:PaymentSystemInfoComplexType" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="InfoUrl">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">Расширенная информация об URL платежной системы.</xsd:documentation>
+          <xsd:documentation xml:lang="en">Fully information about URL of the payment system.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="href" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">URL платежной системы.</xsd:documentation>
+              <xsd:documentation xml:lang="en">URL of the payment system.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="text" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Представление URL платежной системы.</xsd:documentation>
+              <xsd:documentation xml:lang="en">URL name of the payment system.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ReferenceData">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">Справочная информация о платежной системе.</xsd:documentation>
+          <xsd:documentation xml:lang="en">Reference information.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="period" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Срок проведения банковской операции.</xsd:documentation>
+              <xsd:documentation xml:lang="en">The term of carrying out banking transactions.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="percentage" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Комиссия в процентах.</xsd:documentation>
+              <xsd:documentation xml:lang="en">The сommission, in percent.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="percentageExt" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Внешняя комиссия в процентах.</xsd:documentation>
+              <xsd:documentation xml:lang="en">The external сommission, in percent.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="sourceFee" type="tns:Fee">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Комиcсия с плательщика (сумма).</xsd:documentation>
+              <xsd:documentation xml:lang="en">The commission payeer (amount).</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="sourceFeeExt" type="tns:Fee">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Внешняя комиcсия с плательщика (сумма).</xsd:documentation>
+              <xsd:documentation xml:lang="en">External commission from the payer (amount).</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="targetFee" type="tns:Fee">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Комиcсия с получателя платежа (сумма). </xsd:documentation>
+              <xsd:documentation xml:lang="en">Commission to the payee (amount).</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="targetFeeExt" type="tns:Fee">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Внешняя комиcсия с получателя платежа (сумма). </xsd:documentation>
+              <xsd:documentation xml:lang="en">External сommission to the payee (amount).</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="InfoTariff">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">Информация о тарифе</xsd:documentation>
+          <xsd:documentation xml:lang="en">Information on tariff</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="sourceRangeCurrency" type="tns:Currency">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Валюта счета плательщика для которого расчитывается лимит суммы операции.</xsd:documentation>
+              <xsd:documentation xml:lang="en">The payer's account currency for which the calculated limit of the transaction amount.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="sourceAmountMin" type="tns:Money">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Минимальная сумма для плательщика, допустимая в операции.</xsd:documentation>
+              <xsd:documentation xml:lang="en">The minimum amount to the payer that is permitted in operation.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="sourceAmountMax" type="tns:Money">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Максимальная сумма для плательщика, допустимая в операции.</xsd:documentation>
+              <xsd:documentation xml:lang="en">The maximum amount to the payer that is permitted in operation.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="targetRangeCurrency" type="tns:Currency">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Валюта счета получателя платежа для которого расчитывается лимит суммы операции.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Payee account currency for which the calculated limit of the transaction amount.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="targetAmountMin" type="tns:Money">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Минимальная сумма для получателя платежа, допустимая в операции.</xsd:documentation>
+              <xsd:documentation xml:lang="en">The minimum amount to the payee that is permitted in operation.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="targetAmountMax" type="tns:Money">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Максимальная сумма для получателя платежа, допустимая в операции.</xsd:documentation>
+              <xsd:documentation xml:lang="en">The maximum amount to the payee that is permitted in operation.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="PaymentSystemInfoComplexType">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">Тип, описывающий представления информации о платежной системе.</xsd:documentation>
+          <xsd:documentation xml:lang="en">Type of present information of payment system</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="unitId" type="xsd:long">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">ID пользователя в системе МОНЕТА.РУ.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Unique identifier of the user in MONETA.RU.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="name" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Наименование платежной системы.</xsd:documentation>
+              <xsd:documentation xml:lang="en">The name of payment system.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="icon" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">URL логотипа платежной системы.</xsd:documentation>
+              <xsd:documentation xml:lang="en">The URL of icon of the payment system.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="logicalGroup" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Наименование логической группы, к которой принадлежит платежная система.</xsd:documentation>
+              <xsd:documentation xml:lang="en">The name of logical group of the payment system.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="infoUrl" type="tns:InfoUrl">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Расширенная информация об URL платежной системы.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Fully information about URL of the payment system.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="referenceData" type="tns:ReferenceData">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Справочная информация о платежной системе.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Reference information.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="infoTariff" type="tns:InfoTariff">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Краткая информация о тарифе.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Short information on tariff.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="currencies" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Список валюты счетов платежной системы. Располагаются в том же порядке, что и идентификаторы счетов в psAccountIds.</xsd:documentation>
+              <xsd:documentation xml:lang="en">List of currency payment system accounts. Are located in the same order, as well as accounts in psAccountIds are.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="psAccountIds" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Список счетов платежной системы. Располагаются в том же порядке, что и валюты счетов в currencies.</xsd:documentation>
+              <xsd:documentation xml:lang="en">List of payment system accounts. Are located in the same order, as well as accounts currencies in currencies are.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:simpleType name="Fee">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">
+            <p>Тип, представляющий значение суммы вознаграждения.</p>
+          </xsd:documentation>
+          <xsd:documentation xml:lang="en">
+            <p>The transaction fee amount.</p>
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:decimal">
+          <xsd:fractionDigits value="3" />
+        </xsd:restriction>
+      </xsd:simpleType>
       <xsd:element name="InvoiceBatchRequest">
         <xsd:annotation>
           <xsd:documentation xml:lang="ru">Выставление счета к оплате в пакетном режиме.</xsd:documentation>
@@ -1178,52 +1255,8 @@
           <xsd:documentation xml:lang="en">Request parameters for creating invoices in batch mode.</xsd:documentation>
         </xsd:annotation>
         <xsd:complexContent mixed="false">
-          <xsd:extension base="tns:Entity">
+          <xsd:extension base="tns:EntityBatchRequestType">
             <xsd:sequence>
-              <xsd:element name="transactional" type="xsd:boolean">
-                <xsd:annotation>
-                  <xsd:documentation xml:lang="ru">
-                    <p>Флаг, указывающий выполнять ли все денежные переводы в одной транзакции. Если transactional = true, то:</p>
-                    <ul>
-                      <li>При возникновении ошибки все проведенные операции будут отменены.</li>
-                      <li>Можно проводить только операции со счетами монеты. Нельзя выводить деньги на внешние платежные системы.</li>
-                    </ul>
-                    <p>Если transactional = false, то:</p>
-                    <ul>
-                      <li>При возникновении ошибки все проведенные операции будут сохранены.</li>
-                      <li>Можно проводить любые операции, которые доступны в TransferRequest.</li>
-                      <li>Если выставить флаг exitOnFailure = false, то при возникновении ошибки можно пропустить операцию и продолжить выполнение операций дальше.</li>
-                    </ul>
-                  </xsd:documentation>
-                  <xsd:documentation xml:lang="en">
-                    <p>Indicates whether to merge all transfers during batch processing into a single transaction. Valid values are:</p>
-                    <ul>
-                      <li>
-                        <b>True</b>. If an error occurs, all of the transactions are canceled. Only
-                                        transactions with MONETA.RU accounts are supported. Withdrawals to third-party
-                                        payment systems are not allowed.
-                                    </li>
-                      <li>
-                        <b>False</b>. If an error occurs, MONETA.RU cancels only the current
-                                        transaction. Processed transactions are not rolled back. Any transactions that
-                                        are supported by the Transfer request are allowed. If you set the exitOnFailure
-                                        element to false, the Merchant API skips the current transaction and continues
-                                        processing other transactions.
-                                    </li>
-                    </ul>
-                  </xsd:documentation>
-                </xsd:annotation>
-              </xsd:element>
-              <xsd:element name="exitOnFailure" type="xsd:boolean">
-                <xsd:annotation>
-                  <xsd:documentation xml:lang="ru">
-                                Флаг, указывающий прерывать ли выполнение пакета операций, если произошла ошибка. Используется только при transactional = false.
-                            </xsd:documentation>
-                  <xsd:documentation xml:lang="en">
-                                If the transactional element is set to false, indicates whether to stop batch processing if an error occurs in one of the transactions.
-                            </xsd:documentation>
-                </xsd:annotation>
-              </xsd:element>
               <xsd:element minOccurs="1" maxOccurs="unbounded" name="transaction" type="tns:InvoiceRequestType">
                 <xsd:annotation>
                   <xsd:documentation xml:lang="ru">
@@ -2018,6 +2051,37 @@
           </xsd:complexContent>
         </xsd:complexType>
       </xsd:element>
+      <xsd:element name="VerifyPaymentBatchRequest">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">Запрос возможности провести операцию в системе МОНЕТА.РУ. Запрос выполняется в пакетном режиме.</xsd:documentation>
+          <xsd:documentation xml:lang="en">Transaction validation request. Request in batch mode.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:complexContent mixed="false">
+            <xsd:extension base="tns:PaymentBatchRequestType" />
+          </xsd:complexContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="VerifyPaymentBatchResponse">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">Ответ на запрос проверки проведения операции в системе МОНЕТА.РУ. Ответ в пакетном режиме.</xsd:documentation>
+          <xsd:documentation xml:lang="en">Response to a transaction validation request. Response in batch mode.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="unbounded" name="transaction" type="tns:VerifyTransactionResponseType">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="ru">
+                            Детали операций, либо описание ошибок. Порядок соответствует набору операций, переданных в VerifyPaymentBatchRequest.
+                        </xsd:documentation>
+                <xsd:documentation xml:lang="en">
+                            Either information about transactions or error descriptions in the same order as in the VerifyPaymentBatch request.
+                        </xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
       <xsd:simpleType name="AccountId">
         <xsd:annotation>
           <xsd:documentation xml:lang="ru">
@@ -2315,6 +2379,249 @@
           </xsd:element>
         </xsd:sequence>
       </xsd:complexType>
+      <xsd:element name="AccountStatementRequest">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">Запрос на получение выписки по лицевому счет счету.</xsd:documentation>
+          <xsd:documentation xml:lang="en">Request for getting an account statement.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" name="filter">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="ru">Фильтр, по которому ищем выписку по счету.</xsd:documentation>
+                <xsd:documentation xml:lang="en">Filtering criteria.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="1" name="accountId" type="tns:AccountId">
+                    <xsd:annotation>
+                      <xsd:documentation xml:lang="ru">Номер счета в системе MONETA.RU.</xsd:documentation>
+                      <xsd:documentation xml:lang="en">Account number in MONETA.RU.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element minOccurs="1" name="dateFrom" type="xsd:date">
+                    <xsd:annotation>
+                      <xsd:documentation xml:lang="ru">Дата начала периода выборки.</xsd:documentation>
+                      <xsd:documentation xml:lang="en">The start date of the period.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element minOccurs="1" name="dateTo" type="xsd:date">
+                    <xsd:annotation>
+                      <xsd:documentation xml:lang="ru">Дата окончания периода выборки.</xsd:documentation>
+                      <xsd:documentation xml:lang="en">The end date of the period.</xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="attribute" type="tns:KeyValueAttribute">
+                    <xsd:annotation>
+                      <xsd:documentation xml:lang="ru">
+                        <p>Дополнительные атрибуты запроса. (searchInArchive = [ true | false ])</p>
+                      </xsd:documentation>
+                      <xsd:documentation xml:lang="en">
+                        <p>Additional request parameters. (searchInArchive = [ true | false ])</p>
+                      </xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element default="25" name="pageSize" type="xsd:int">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="ru">Количество элементов, возвращаемых в результате запроса.</xsd:documentation>
+                <xsd:documentation xml:lang="en">The number of elements to return per page.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="AccountStatementRecord">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">Информация об операции.</xsd:documentation>
+          <xsd:documentation xml:lang="en">Operation details.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="date" type="xsd:dateTime">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Дата операции.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Operation date.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="1" name="operationId" type="xsd:long">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">
+                <p>Номер операции в системе МОНЕТА.РУ.</p>
+              </xsd:documentation>
+              <xsd:documentation xml:lang="en">
+                <p>MONETA.RU transaction ID.</p>
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="operationView" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">
+                <p>Вид опрации.</p>
+              </xsd:documentation>
+              <xsd:documentation xml:lang="en">
+                <p>Operation type.</p>
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="correspondentName" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">
+                <p>Наименование контрагента.</p>
+              </xsd:documentation>
+              <xsd:documentation xml:lang="en">
+                <p>Correspondent.</p>
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="correspondentAccountId" type="tns:AccountId">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Номер счета контрагента в системе MONETA.RU.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Correspondent account number in MONETA.RU.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="correspondentAccount" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Номер корреспондирующего счета контрагента.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Corresponding account.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="debitAmount" type="tns:Money">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Сумма по дебету счета.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Debit amount.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="creditAmount" type="tns:Money">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Сумма по кредиту счета.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Credit amount.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="description" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Назначение операции.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Description.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="AccountStatement">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">Выписка по счету.</xsd:documentation>
+          <xsd:documentation xml:lang="en">Account statement.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element minOccurs="1" name="ownerAccount" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Внутрибанковский счет.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Owner account.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="contractDate" type="xsd:dateTime">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Дата договора.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Contract date.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="ownerAccountCurrency" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Валюта счета.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Account currency.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="ownerName" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Владелец счета.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Account owner.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="dateFrom" type="xsd:dateTime">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Дата начала выборки.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Date from.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="dateTo" type="xsd:dateTime">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Дата окончания выборки.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Date to.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="lastOperationDate" type="xsd:dateTime">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Дата последней операции.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Date of last operation.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="now" type="xsd:dateTime">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Дата актуальности.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Relevance date.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="inSaldo" type="tns:Money">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Входящий остаток.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Opening balance.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="outSaldo" type="tns:Money">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Исходящий остаток.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Closing balance.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="inSaldoBlocked" type="tns:Money">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Заблокированная входящая сумма.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Blocked opening balance.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="outSaldoBlocked" type="tns:Money">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Заблокированная исходящая сумма.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Blocked closing balance.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="debitAmountTotal" type="tns:Money">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Итоговые обороты по дебету.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Total turnover on the debit.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="creditAmountTotal" type="tns:Money">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Итоговые обороты по кредиту.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Total turnover on the debit.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="totalSize" type="xsd:long">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Общее количество записей, которое можно получить в данной выборке.</xsd:documentation>
+              <xsd:documentation xml:lang="en">The total number of records in the response.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="orders" type="tns:AccountStatementRecord">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">Информация об операциях.</xsd:documentation>
+              <xsd:documentation xml:lang="en">Information about operations.</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="AccountStatementResponse">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">Ответ на запрос accountStatementRequest. Содержит выписку по счету.</xsd:documentation>
+          <xsd:documentation xml:lang="en">Response to accountStatementRequest. The response contains account statement.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="accountStatement" type="tns:AccountStatement" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
       <xsd:element name="FindAccountByIdRequest">
         <xsd:annotation>
           <xsd:documentation xml:lang="ru">
@@ -4266,7 +4573,7 @@
               <li>
                 <b>acting_document</b>. Документ, на основании которого действует директор (для организации).</li>
               <li>
-                <b>position_director_details</b>. Подробности по документу, на основании которого действует директор (для организации).</li>
+                <b>acting_document_details</b>. Подробности по документу, на основании которого действует директор (для организации).</li>
               <li>
                 <b>attorney_number_ru</b>. Номер (доверенность, для организации).</li>
               <li>
@@ -4296,7 +4603,7 @@
               <li>
                 <b>position_contact</b>. Должность контакта по техническим вопросам.</li>
               <li>
-                <b>jointGoverning_body</b>. Коллегиальный орган управления (исполнительный орган).</li>
+                <b>joint_governing_body</b>. Коллегиальный орган управления (исполнительный орган).</li>
               <li>
                 <b>joint_body_members</b>. ФИО и должность членов коллегиального органа.</li>
               <li>
@@ -4339,51 +4646,51 @@
               <li>
                 <b>ui_language</b>. язык интерфейса пользователя. RU - русский, EN - английский.</li>
               <li>
-                <b>email_for_notifications</b>. Аадрес электронной почты.</li>
+                <b>email_for_notifications</b>. Адрес электронной почты.</li>
               <li>
-                <b>partner_conditions_laws</b>. Статус "Содержимое сайта / товары и услуги соответствуют требованиям законодательства РФ и страны регистрации".</li>
+                <b>conditions_laws</b>. Статус "Содержимое сайта / товары и услуги соответствуют требованиям законодательства РФ и страны регистрации".</li>
               <li>
-                <b>partner_conditions_ethical</b>. Статус "Содержимое сайта соответствует общепринятым морально-этическим нормам".</li>
+                <b>conditions_ethical</b>. Статус "Содержимое сайта соответствует общепринятым морально-этическим нормам".</li>
               <li>
-                <b>partner_conditions_full_desc</b>. Статус "Товары или услуги имеют исчерпывающее описание, не подразумевающее двоякое толкование".</li>
+                <b>conditions_full_desc</b>. Статус "Товары или услуги имеют исчерпывающее описание, не подразумевающее двоякое толкование".</li>
               <li>
-                <b>partner_conditions_hosting</b>. Статус "Сайт не размещён на бесплатном хостинге".</li>
+                <b>conditions_hosting</b>. Статус "Сайт не размещён на бесплатном хостинге".</li>
               <li>
-                <b>partner_conditions_payee</b>. Статус "На сайте присутствует информация о получателе платежей, доступная без регистрации плательщика".</li>
+                <b>conditions_payee</b>. Статус "На сайте присутствует информация о получателе платежей, доступная без регистрации плательщика".</li>
               <li>
-                <b>partner_conditions_payer</b>. Статус "На сайте присутствует контактная информация для плательщиков, доступная без регистрации".</li>
+                <b>conditions_payer</b>. Статус "На сайте присутствует контактная информация для плательщиков, доступная без регистрации".</li>
               <li>
-                <b>partner_conditions_site</b>. Статус "Сайт полностью функционален и заполнен контентом".</li>
+                <b>conditions_site</b>. Статус "Сайт полностью функционален и заполнен контентом".</li>
               <li>
-                <b>partner_conditions_paw_info</b>. Статус "Сайт содержит доступную без регистрации информацию о том, что оплата происходит с использованием сервиса <a href="http://www.payanyway.ru" target="_blank">PayAnyWay</a>".</li>
+                <b>conditions_paw_info</b>. Статус "Сайт содержит доступную без регистрации информацию о том, что оплата происходит с использованием сервиса <a href="http://www.payanyway.ru" target="_blank">PayAnyWay</a>".</li>
               <li>
-                <b>partner_conditions_payment_info</b>. Статус "Описание порядка и процесса оплаты, а также информация о временном промежутке между оплатой и отгрузкой (доставкой) товара или предоставлением услуги доступны без регистрации".</li>
+                <b>conditions_payment_info</b>. Статус "Описание порядка и процесса оплаты, а также информация о временном промежутке между оплатой и отгрузкой (доставкой) товара или предоставлением услуги доступны без регистрации".</li>
               <li>
-                <b>partner_conditions_correct_data</b>. Статус "Все необходимые данные внесены и являются актуальными".</li>
+                <b>conditions_correct_data</b>. Статус "Все необходимые данные внесены и являются актуальными".</li>
               <li>
-                <b>partner_conditions_documents</b>. Статус "На сайте размещены документы, необходимые для совершения сделки между интернет-магазином и клиентами в соответствии с требованиями Законодательства РФ".</li>
+                <b>conditions_documents</b>. Статус "На сайте размещены документы, необходимые для совершения сделки между интернет-магазином и клиентами в соответствии с требованиями Законодательства РФ".</li>
               <li>
-                <b>partner_conditions_laws_details</b>. Подробности для "Содержимое сайта / товары и услуги соответствуют требованиям законодательства РФ и страны регистрации".</li>
+                <b>conditions_laws_details</b>. Подробности для "Содержимое сайта / товары и услуги соответствуют требованиям законодательства РФ и страны регистрации".</li>
               <li>
-                <b>partner_conditions_ethical_details</b>. Подробности для "Содержимое сайта соответствует общепринятым морально-этическим нормам".</li>
+                <b>conditions_ethical_details</b>. Подробности для "Содержимое сайта соответствует общепринятым морально-этическим нормам".</li>
               <li>
-                <b>partner_conditions_full_desc_details</b>. Подробности для "Товары или услуги имеют исчерпывающее описание, не подразумевающее двоякое толкование".</li>
+                <b>conditions_full_desc_details</b>. Подробности для "Товары или услуги имеют исчерпывающее описание, не подразумевающее двоякое толкование".</li>
               <li>
-                <b>partner_conditions_hosting_details</b>. Подробности для "Сайт не размещён на бесплатном хостинге".</li>
+                <b>conditions_hosting_details</b>. Подробности для "Сайт не размещён на бесплатном хостинге".</li>
               <li>
-                <b>partner_conditions_payee_details</b>. Подробности для "На сайте присутствует информация о получателе платежей, доступная без регистрации плательщика".</li>
+                <b>conditions_payee_details</b>. Подробности для "На сайте присутствует информация о получателе платежей, доступная без регистрации плательщика".</li>
               <li>
-                <b>partner_conditions_payer_details</b>. Подробности для "На сайте присутствует контактная информация для плательщиков, доступная без регистрации".</li>
+                <b>conditions_payer_details</b>. Подробности для "На сайте присутствует контактная информация для плательщиков, доступная без регистрации".</li>
               <li>
-                <b>partner_conditions_site_details</b>. Подробности для "Сайт полностью функционален и заполнен контентом".</li>
+                <b>conditions_site_details</b>. Подробности для "Сайт полностью функционален и заполнен контентом".</li>
               <li>
-                <b>partner_conditions_paw_info_details</b>. Подробности для "Сайт содержит доступную без регистрации информацию о том, что оплата происходит с использованием сервиса <a href="http://www.payanyway.ru" target="_blank">PayAnyWay</a>".</li>
+                <b>conditions_paw_info_details</b>. Подробности для "Сайт содержит доступную без регистрации информацию о том, что оплата происходит с использованием сервиса <a href="http://www.payanyway.ru" target="_blank">PayAnyWay</a>".</li>
               <li>
-                <b>partner_conditions_payment_info_details</b>. Подробности для "Описание порядка и процесса оплаты, а также информация о временном промежутке между оплатой и отгрузкой (доставкой) товара или предоставлением услуги доступны без регистрации".</li>
+                <b>conditions_payment_info_details</b>. Подробности для "Описание порядка и процесса оплаты, а также информация о временном промежутке между оплатой и отгрузкой (доставкой) товара или предоставлением услуги доступны без регистрации".</li>
               <li>
-                <b>partner_conditions_correct_data_details</b>. Подробности для "Все необходимые данные внесены и являются актуальными".</li>
+                <b>conditions_correct_data_details</b>. Подробности для "Все необходимые данные внесены и являются актуальными".</li>
               <li>
-                <b>partner_conditions_documents_details</b>. Подробности для "На сайте размещены документы, необходимые для совершения сделки между интернет-магазином и клиентами в соответствии с требованиями Законодательства РФ".</li>
+                <b>conditions_documents_details</b>. Подробности для "На сайте размещены документы, необходимые для совершения сделки между интернет-магазином и клиентами в соответствии с требованиями Законодательства РФ".</li>
               <li>
                 <b>agreement_sent_date</b>. Дата отправки Заявления.</li>
               <li>
@@ -4494,7 +4801,7 @@
                 <li>
                   <b>acting_document</b>. Document on basis of which Managing director acts (for organization).</li>
                 <li>
-                  <b>position_director_details</b>. Details for document on basis of which Managing director acts (for organization).</li>
+                  <b>acting_document_details</b>. Details for document on basis of which Managing director acts (for organization).</li>
                 <li>
                   <b>attorney_number_ru</b>. Number (attorney, for organization).</li>
                 <li>
@@ -4524,7 +4831,7 @@
                 <li>
                   <b>position_contact</b>. Technical support contact title.</li>
                 <li>
-                  <b>jointGoverning_body</b>. Joint governing body (executive body).</li>
+                  <b>joint_governing_body</b>. Joint governing body (executive body).</li>
                 <li>
                   <b>joint_body_members</b>. Full name and title of collective body members.</li>
                 <li>
@@ -4570,49 +4877,49 @@
                 <li>
                   <b>email_for_notifications</b>. Email address of the organization that is used for notifications.</li>
                 <li>
-                  <b>partner_conditions_laws</b>. State for "Website content / goods and services comply with the RF legislation and country of registration requirements".</li>
+                  <b>conditions_laws</b>. State for "Website content / goods and services comply with the RF legislation and country of registration requirements".</li>
                 <li>
-                  <b>partner_conditions_ethical</b>. State for "Website content complies with generally accepted moral and ethical norms".</li>
+                  <b>conditions_ethical</b>. State for "Website content complies with generally accepted moral and ethical norms".</li>
                 <li>
-                  <b>partner_conditions_full_desc</b>. State for "Goods or services have comprehensive description, not implying double interpretation".</li>
+                  <b>conditions_full_desc</b>. State for "Goods or services have comprehensive description, not implying double interpretation".</li>
                 <li>
-                  <b>partner_conditions_hosting</b>. State for "Website is not hosted on free hosting".</li>
+                  <b>conditions_hosting</b>. State for "Website is not hosted on free hosting".</li>
                 <li>
-                  <b>partner_conditions_payee</b>. State for "There is information on beneficiary of payment available for unauthorized payers on the website".</li>
+                  <b>conditions_payee</b>. State for "There is information on beneficiary of payment available for unauthorized payers on the website".</li>
                 <li>
-                  <b>partner_conditions_payer</b>. State for "There's contact information available for unauthorized payers on the website".</li>
+                  <b>conditions_payer</b>. State for "There's contact information available for unauthorized payers on the website".</li>
                 <li>
-                  <b>partner_conditions_site</b>. State for "Website is fully functional and filled in with content".</li>
+                  <b>conditions_site</b>. State for "Website is fully functional and filled in with content".</li>
                 <li>
-                  <b>partner_conditions_paw_info</b>. State for "Website contains information reporting that payment is occurred via <a href="http://www.payanyway.ru" target="_blank">PayAnyWay</a> service available for unauthorized users.".</li>
+                  <b>conditions_paw_info</b>. State for "Website contains information reporting that payment is occurred via <a href="http://www.payanyway.ru" target="_blank">PayAnyWay</a> service available for unauthorized users.".</li>
                 <li>
-                  <b>partner_conditions_payment_info</b>. State for "Payment order and process description, as well as information on temporary interval between payment and dispatch (delivery) of wares or provision of service are available for unauthorized users.".</li>
+                  <b>conditions_payment_info</b>. State for "Payment order and process description, as well as information on temporary interval between payment and dispatch (delivery) of wares or provision of service are available for unauthorized users.".</li>
                 <li>
-                  <b>partner_conditions_correct_data</b>. State for "All essential data are inserted and are supposed to be up-to-date".</li>
+                  <b>conditions_correct_data</b>. State for "All essential data are inserted and are supposed to be up-to-date".</li>
                 <li>
-                  <b>partner_conditions_documents</b>. State for "The website contains the documents required for the transaction between the online store and customers in accordance with the legislation of the Russian Federation (the contract-offer and / or other documents).<a href="https://payanyway.ru/info/public/w/partnership/howto/oferta.pdf">Example of a typical contract-offer</a>".</li>
+                  <b>conditions_documents</b>. State for "The website contains the documents required for the transaction between the online store and customers in accordance with the legislation of the Russian Federation (the contract-offer and / or other documents).<a href="https://payanyway.ru/info/public/w/partnership/howto/oferta.pdf">Example of a typical contract-offer</a>".</li>
                 <li>
-                  <b>partner_conditions_laws_details</b>. Details for "Website content / goods and services comply with the RF legislation and country of registration requirements".</li>
+                  <b>conditions_laws_details</b>. Details for "Website content / goods and services comply with the RF legislation and country of registration requirements".</li>
                 <li>
-                  <b>partner_conditions_ethical_details</b>. Details for "Website content complies with generally accepted moral and ethical norms".</li>
+                  <b>conditions_ethical_details</b>. Details for "Website content complies with generally accepted moral and ethical norms".</li>
                 <li>
-                  <b>partner_conditions_full_desc_details</b>. Details for "Goods or services have comprehensive description, not implying double interpretation".</li>
+                  <b>conditions_full_desc_details</b>. Details for "Goods or services have comprehensive description, not implying double interpretation".</li>
                 <li>
-                  <b>partner_conditions_hosting_details</b>. Details for "Website is not hosted on free hosting".</li>
+                  <b>conditions_hosting_details</b>. Details for "Website is not hosted on free hosting".</li>
                 <li>
-                  <b>partner_conditions_payee_details</b>. Details for "There is information on beneficiary of payment available for unauthorized payers on the website".</li>
+                  <b>conditions_payee_details</b>. Details for "There is information on beneficiary of payment available for unauthorized payers on the website".</li>
                 <li>
-                  <b>partner_conditions_payer_details</b>. Details for "There's contact information available for unauthorized payers on the website".</li>
+                  <b>conditions_payer_details</b>. Details for "There's contact information available for unauthorized payers on the website".</li>
                 <li>
-                  <b>partner_conditions_site_details</b>. Details for "Website is fully functional and filled in with content".</li>
+                  <b>conditions_site_details</b>. Details for "Website is fully functional and filled in with content".</li>
                 <li>
-                  <b>partner_conditions_paw_info_details</b>. Details for "Website contains information reporting that payment is occurred via <a href="http://www.payanyway.ru" target="_blank">PayAnyWay</a> service available for unauthorized users.".</li>
+                  <b>conditions_paw_info_details</b>. Details for "Website contains information reporting that payment is occurred via <a href="http://www.payanyway.ru" target="_blank">PayAnyWay</a> service available for unauthorized users.".</li>
                 <li>
-                  <b>partner_conditions_payment_info_details</b>. Details for "Payment order and process description, as well as information on temporary interval between payment and dispatch (delivery) of wares or provision of service are available for unauthorized users.".</li>
+                  <b>conditions_payment_info_details</b>. Details for "Payment order and process description, as well as information on temporary interval between payment and dispatch (delivery) of wares or provision of service are available for unauthorized users.".</li>
                 <li>
-                  <b>partner_conditions_correct_data_details</b>. Details for "All essential data are inserted and are supposed to be up-to-date".</li>
+                  <b>conditions_correct_data_details</b>. Details for "All essential data are inserted and are supposed to be up-to-date".</li>
                 <li>
-                  <b>partner_conditions_documents_details</b>. Details for "The website contains the documents required for the transaction between the online store and customers in accordance with the legislation of the Russian Federation (the contract-offer and / or other documents). <a href="https://payanyway.ru/info/public/w/partnership/howto/oferta.pdf">Example of a typical contract-offer</a>".</li>
+                  <b>conditions_documents_details</b>. Details for "The website contains the documents required for the transaction between the online store and customers in accordance with the legislation of the Russian Federation (the contract-offer and / or other documents). <a href="https://payanyway.ru/info/public/w/partnership/howto/oferta.pdf">Example of a typical contract-offer</a>".</li>
                 <li>
                   <b>agreement_sent_date</b>. Date of sending the document.</li>
                 <li>
@@ -4719,6 +5026,316 @@
         <xsd:simpleType>
           <xsd:restriction base="xsd:long" />
         </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="CheckProfileRequest">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">Запрос на создание пользователя в системе МОНЕТА.РУ.</xsd:documentation>
+          <xsd:documentation xml:lang="en">Request for creating a MONETA.RU account.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="unitId" type="xsd:long">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="ru">ID пользователя в системе МОНЕТА.РУ, профиль которого надо проверить.</xsd:documentation>
+                <xsd:documentation xml:lang="en">The unique identifier of the MONETA.RU user that you want to check.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="CheckProfileResponse">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">Ответ на запрос CheckProfileRequest, содержащий информацию о состоянии профиля.</xsd:documentation>
+          <xsd:documentation xml:lang="en">Response to CheckProfileRequest that contains the state of the profile.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="status" type="xsd:string">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="ru">
+                  <p>Статус профиля:</p>
+                  <p>NONE [данные не нужны]</p>
+                  <p>OK [все данные указаны]</p>
+                  <p>DATA_REQUIRED [требуются данные]</p>
+                </xsd:documentation>
+                <xsd:documentation xml:lang="en">
+                  <p>Profile status:</p>
+                  <p>NONE [no data required]</p>
+                  <p>OK [all data entered]</p>
+                  <p>DATA_REQUIRED [some data required]</p>
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:sequence>
+              <xsd:element minOccurs="0" maxOccurs="unbounded" name="requestInfo">
+                <xsd:annotation>
+                  <xsd:documentation xml:lang="ru">
+                    <p>Информация о запросе</p>
+                  </xsd:documentation>
+                  <xsd:documentation xml:lang="en">
+                    <p>Request information</p>
+                  </xsd:documentation>
+                </xsd:annotation>
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element minOccurs="0" name="action" type="xsd:string">
+                      <xsd:annotation>
+                        <xsd:documentation xml:lang="ru">
+                          <p>Информация о запросе:</p>
+                          <p>REQUEST [необходимо сделать запрос из данных ниже]</p>
+                          <p>CALL_SERVICE_SUPPORT [обратитесь в службу поддержки для заполнения полей]</p>
+                        </xsd:documentation>
+                        <xsd:documentation xml:lang="en">
+                          <p>Информация о запросе:</p>
+                          <p>REQUEST [required to execute the request based on data below]</p>
+                          <p>CALL_SERVICE_SUPPORT [call support service to fill data]</p>
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="0" name="scope" type="xsd:string">
+                      <xsd:annotation>
+                        <xsd:documentation xml:lang="ru">
+                          <p>Область применения запроса:
+                                                Personal [персональные данные],
+                                                Director [директор],
+                                                Director document [документ директора],
+                                                Founder [учредитель],
+                                                Beneficiary [бенефициар],
+                                                Beneficiary document [документ бенефициара],
+                                                Licence [лицензия],
+                                                Juridical [юридические данные],
+                                                Bank [банковские данные]
+                                            </p>
+                        </xsd:documentation>
+                        <xsd:documentation xml:lang="en">
+                          <p>Request scope:
+                                                Personal [personal data],
+                                                Director [director profile],
+                                                Director document,
+                                                Founder,
+                                                Beneficiary,
+                                                Beneficiary document,
+                                                Licence,
+                                                Juridical,
+                                                Bank
+                                            </p>
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element minOccurs="0" name="method" type="xsd:string">
+                      <xsd:annotation>
+                        <xsd:documentation xml:lang="ru">
+                          <p>Метод для выполнения</p>
+                        </xsd:documentation>
+                        <xsd:documentation xml:lang="en">
+                          <p>API Method to execute</p>
+                        </xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:element>
+                    <xsd:choice>
+                      <xsd:element minOccurs="0" maxOccurs="1" name="profile">
+                        <xsd:annotation>
+                          <xsd:documentation xml:lang="ru">
+                            <p>Данные запроса [Personal, Director, Founder, Beneficiary] для заполнения профиля</p>
+                          </xsd:documentation>
+                          <xsd:documentation xml:lang="en">
+                            <p>Request data [Personal, Director, Founder, Beneficiary] to fill profile</p>
+                          </xsd:documentation>
+                        </xsd:annotation>
+                        <xsd:complexType>
+                          <xsd:sequence>
+                            <xsd:element minOccurs="0" name="unitId" type="xsd:long">
+                              <xsd:annotation>
+                                <xsd:documentation xml:lang="ru">
+                                  <p>ID родительского пользователя в системе МОНЕТА.РУ, к которому будет принадлежать создаваемый пользователь.</p>
+                                  <p>Если поле не задано, то пользователь будет принадлежать тому пользователю, от имени которого работает web service.</p>
+                                </xsd:documentation>
+                                <xsd:documentation xml:lang="en">
+                                  <p>Unique identifier of the parent MONETA.RU account that will own the new account.</p>
+                                  <p>If you ommit this element, the new account will belong to the the user who sends this request.</p>
+                                </xsd:documentation>
+                              </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element minOccurs="0" name="profileId" type="xsd:long">
+                              <xsd:annotation>
+                                <xsd:documentation xml:lang="ru">
+                                  <p>ID главного профиля или дочернего подпрофиля</p>
+                                </xsd:documentation>
+                                <xsd:documentation xml:lang="en">
+                                  <p>ID main profile or child subprofile</p>
+                                </xsd:documentation>
+                              </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element minOccurs="0" name="profileType" type="tns:ProfileType">
+                              <xsd:annotation>
+                                <xsd:documentation xml:lang="ru">Тип пользователя. Возможные значения:
+                                                            <ul><li>client</li><li>organization</li></ul></xsd:documentation>
+                                <xsd:documentation xml:lang="en">Profile type. Valid values are:
+                                                            <ul><li>client</li><li>organization</li></ul></xsd:documentation>
+                              </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element minOccurs="0" name="profile" type="tns:Profile">
+                              <xsd:annotation>
+                                <xsd:documentation xml:lang="ru">
+                                  <p>Данные создаваемого пользователя. Данные представлены в виде "ключ-значение".</p>
+                                  <p>Ключи данных зависят от типа пользователя (ProfileType).</p>
+                                </xsd:documentation>
+                                <xsd:documentation xml:lang="en">
+                                  <p>User profile information in the list of key-value pairs.</p>
+                                  <p>The list of supported keys depends on ProfileType.</p>
+                                </xsd:documentation>
+                              </xsd:annotation>
+                            </xsd:element>
+                          </xsd:sequence>
+                        </xsd:complexType>
+                      </xsd:element>
+                      <xsd:element minOccurs="0" maxOccurs="1" name="document">
+                        <xsd:annotation>
+                          <xsd:documentation xml:lang="ru">
+                            <p>Данные запроса [Director document, Beneficiary document, ] для заполнения профиля</p>
+                          </xsd:documentation>
+                          <xsd:documentation xml:lang="en">
+                            <p>Request data [Director document, , Beneficiary document] to fill profile</p>
+                          </xsd:documentation>
+                        </xsd:annotation>
+                        <xsd:complexType>
+                          <xsd:sequence>
+                            <xsd:element minOccurs="0" name="unitId" type="xsd:long">
+                              <xsd:annotation>
+                                <xsd:documentation xml:lang="ru">
+                                  <p>Пользователь, которому принадлежит данный документ.</p>
+                                  <p>Если это поле не задано, то документ ищется для текущего пользователя.</p>
+                                </xsd:documentation>
+                                <xsd:documentation xml:lang="en">
+                                  <p>The unique identifier of the user to whom the document belongs.</p>
+                                  <p>If you omit this element, MONETA.RU uses the ID of the user who sends the request.</p>
+                                </xsd:documentation>
+                              </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element minOccurs="0" name="profileId" type="xsd:long">
+                              <xsd:annotation>
+                                <xsd:documentation xml:lang="ru">
+                                  <p>ID главного профиля или дочернего подпрофиля</p>
+                                </xsd:documentation>
+                                <xsd:documentation xml:lang="en">
+                                  <p>ID main profile or child subprofile</p>
+                                </xsd:documentation>
+                              </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element minOccurs="0" name="id" type="xsd:long">
+                              <xsd:annotation>
+                                <xsd:documentation xml:lang="ru">Идентификатор документа в системе МОНЕТА.РУ.</xsd:documentation>
+                                <xsd:documentation xml:lang="en">Unique identifier of a document in MONETA.RU.</xsd:documentation>
+                              </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element minOccurs="0" name="type" type="tns:DocumentType">
+                              <xsd:annotation>
+                                <xsd:documentation xml:lang="ru">Тип документа</xsd:documentation>
+                                <xsd:documentation xml:lang="en">Document type</xsd:documentation>
+                              </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element minOccurs="0" maxOccurs="unbounded" name="attribute" type="tns:KeyValueAttribute">
+                              <xsd:annotation>
+                                <xsd:documentation xml:lang="ru">
+                                  <p>Поля документа в системе МОНЕТА.РУ.</p>
+                                  <p>Данные представляются в виде "ключ-значение".</p>
+                                </xsd:documentation>
+                                <xsd:documentation xml:lang="en">
+                                  <p>Document attributes in MONETA.RU.</p>
+                                  <p>Document information is specified in a list of key-value pairs</p>
+                                </xsd:documentation>
+                              </xsd:annotation>
+                            </xsd:element>
+                          </xsd:sequence>
+                        </xsd:complexType>
+                      </xsd:element>
+                      <xsd:element minOccurs="0" maxOccurs="1" name="bank">
+                        <xsd:annotation>
+                          <xsd:documentation xml:lang="ru">
+                            <p>Данные запроса [Bank] для заполнения профиля</p>
+                          </xsd:documentation>
+                          <xsd:documentation xml:lang="en">
+                            <p>Request data [Bank] to fill profile</p>
+                          </xsd:documentation>
+                        </xsd:annotation>
+                        <xsd:complexType>
+                          <xsd:sequence>
+                            <xsd:element minOccurs="0" name="unitId" type="xsd:long">
+                              <xsd:annotation>
+                                <xsd:documentation xml:lang="ru">
+                                  <p>ID родительского пользователя в системе МОНЕТА.РУ, к которому будут принадлежать банковские данные.</p>
+                                  <p>Если поле не задано, то пользователь будет принадлежать тому пользователю, от имени которого работает web service.</p>
+                                </xsd:documentation>
+                                <xsd:documentation xml:lang="en">
+                                  <p>Unique identifier of the parent MONETA.RU account that will own the bank data.</p>
+                                  <p>If you omit this element, the new account will belong to the the user who sends this request.</p>
+                                </xsd:documentation>
+                              </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element minOccurs="0" name="id" type="xsd:long">
+                              <xsd:annotation>
+                                <xsd:documentation xml:lang="ru">Идентификатор объекта с банковскими данными</xsd:documentation>
+                                <xsd:documentation xml:lang="en">Unique identifier of a object with bank data.</xsd:documentation>
+                              </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element minOccurs="0" maxOccurs="unbounded" name="attribute" type="tns:KeyValueAttribute">
+                              <xsd:annotation>
+                                <xsd:documentation xml:lang="ru">
+                                  <p>Поля документа в системе МОНЕТА.РУ.</p>
+                                  <p>Данные представляются в виде "ключ-значение".</p>
+                                </xsd:documentation>
+                                <xsd:documentation xml:lang="en">
+                                  <p>Document attributes in MONETA.RU.</p>
+                                  <p>Document information is specified in a list of key-value pairs</p>
+                                </xsd:documentation>
+                              </xsd:annotation>
+                            </xsd:element>
+                          </xsd:sequence>
+                        </xsd:complexType>
+                      </xsd:element>
+                      <xsd:element minOccurs="0" maxOccurs="1" name="juridical">
+                        <xsd:annotation>
+                          <xsd:documentation xml:lang="ru">
+                            <p>Данные запроса [Juridical] для заполнения профиля</p>
+                          </xsd:documentation>
+                          <xsd:documentation xml:lang="en">
+                            <p>Request data [Juridical] to fill profile</p>
+                          </xsd:documentation>
+                        </xsd:annotation>
+                        <xsd:complexType>
+                          <xsd:sequence>
+                            <xsd:element minOccurs="0" maxOccurs="unbounded" name="attribute" type="tns:KeyValueAttribute">
+                              <xsd:annotation>
+                                <xsd:documentation xml:lang="ru">
+                                  <p>Поля документа в системе МОНЕТА.РУ</p>
+                                  <p>Данные представляются в виде "ключ-значение"</p>
+                                </xsd:documentation>
+                                <xsd:documentation xml:lang="en">
+                                  <p>Document attributes in MONETA.RU.</p>
+                                  <p>Document information is specified in a list of key-value pairs</p>
+                                </xsd:documentation>
+                              </xsd:annotation>
+                            </xsd:element>
+                          </xsd:sequence>
+                        </xsd:complexType>
+                      </xsd:element>
+                    </xsd:choice>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="1" name="foundersTotalShare" type="xsd:float">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="ru">
+                  <p>Сумма долей учредителей (%)</p>
+                </xsd:documentation>
+                <xsd:documentation xml:lang="en">
+                  <p>The status of founders' shares (%)</p>
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
       </xsd:element>
       <xsd:element name="EditProfileRequest">
         <xsd:annotation>
@@ -5977,6 +6594,218 @@
         </xsd:annotation>
         <xsd:complexType />
       </xsd:element>
+      <xsd:complexType name="ReportInstance">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">
+            <p>Экземпляр отчета за конкретный месяц в системе МОНЕТА.РУ.</p>
+          </xsd:documentation>
+          <xsd:documentation xml:lang="en">
+            <p>Report instance.</p>
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="id" type="xsd:long">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">
+                <p>ID экземпляра отчета.</p>
+              </xsd:documentation>
+              <xsd:documentation xml:lang="en">
+                <p>Report instance ID.</p>
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="reportId" type="xsd:long">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">
+                <p>ID отчета.</p>
+              </xsd:documentation>
+              <xsd:documentation xml:lang="en">
+                <p>Report ID.</p>
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="year" type="xsd:int">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">
+                <p>Год.</p>
+              </xsd:documentation>
+              <xsd:documentation xml:lang="en">
+                <p>Report instance year.</p>
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="month" type="xsd:int">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">
+                <p>Месяц (1-12).</p>
+              </xsd:documentation>
+              <xsd:documentation xml:lang="en">
+                <p>Report instance month (1-12).</p>
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="url" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">
+                <p>Ссылка, по которой можно скачать данный экземпляр отчета в формате PDF.</p>
+                <p>Ссылка для скачивания будет сгенерирована только в том случае,
+                            если у пользователя, который вызывает данный метод, в разделе "Мой счет" - "Безопасность" создан "Публичный идентификатор".</p>
+                <p>Ссылка для скачивания действует в течении 30 минут. В элементе urlExpirationDate указано время действия ссылки.</p>
+                <p>Если время действия ссылки закончилось, то в ответ будет отдаваться HTTP status code: 400 (Bad Request).</p>
+                <p>Если в ссылке для скачивания будут изменены параметры, то в ответ будет отдаваться HTTP status code: 400 (Bad Request).</p>
+              </xsd:documentation>
+              <xsd:documentation xml:lang="en">
+                <p>Download URL.</p>
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="urlExpirationDate" type="xsd:dateTime">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">
+                <p>Время действия ссылки для скачивания отчета.</p>
+              </xsd:documentation>
+              <xsd:documentation xml:lang="en">
+                <p>URL expiration date.</p>
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="attribute" type="tns:KeyValueApprovedAttribute" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="Report">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">
+            <p>Отчет без указания конкретной даты.</p>
+          </xsd:documentation>
+          <xsd:documentation xml:lang="en">
+            <p>Report.</p>
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="id" type="xsd:long">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">
+                <p>ID отчета.</p>
+              </xsd:documentation>
+              <xsd:documentation xml:lang="en">
+                <p>Report ID.</p>
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="name" type="xsd:string">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">
+                <p>Название отчета.</p>
+              </xsd:documentation>
+              <xsd:documentation xml:lang="en">
+                <p>Report name.</p>
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="unitId" type="xsd:long">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">
+                <p>ID пользователя в системе МОНЕТА.РУ.</p>
+              </xsd:documentation>
+              <xsd:documentation xml:lang="en">
+                <p>User ID.</p>
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element name="typeId" type="xsd:long">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">
+                <p>Тип отчета.</p>
+                <p>Пока имеет одно значение: 3.</p>
+              </xsd:documentation>
+              <xsd:documentation xml:lang="en">
+                <p>Report type ID.</p>
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="reportInstance" type="tns:ReportInstance">
+            <xsd:annotation>
+              <xsd:documentation xml:lang="ru">
+                <p>Список экземпляров отчета.</p>
+              </xsd:documentation>
+              <xsd:documentation xml:lang="en">
+                <p>Report instances list.</p>
+              </xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="attribute" type="tns:KeyValueApprovedAttribute" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="FindReportsRequest">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">
+            <p>Запрос на получение отчетов по ID пользователя. Если данные не найдены, возвращается пустой список.</p>
+          </xsd:documentation>
+          <xsd:documentation xml:lang="en">
+            <p>Request for reports by a user ID. MONETA.RU returns an empty list if it cannot find reports.</p>
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" name="unitId" type="xsd:long">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="ru">
+                  <p>ID пользователя в системе МОНЕТА.РУ. Если это поле не задано, то используется текущий пользователь.</p>
+                </xsd:documentation>
+                <xsd:documentation xml:lang="en">
+                  <p>User ID. If you omit this element, MONETA.RU uses the ID of the user who sends the request.</p>
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="reportId" type="xsd:long">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="ru">
+                  <p>ID отчета.</p>
+                  <p>Если в запросе указан ID отчета, то в ответе (FindReportsResponse) в списке отчетов (элемент report) будет один отчет.</p>
+                </xsd:documentation>
+                <xsd:documentation xml:lang="en">
+                  <p>Report ID.</p>
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="year" type="xsd:int">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="ru">
+                  <p>Год, за который следует искать экземпляры отчета.</p>
+                  <p>Если в запросе это поле не будет указано,
+                                    то в ответе (FindReportsResponse) будут возвращены только отчеты, а экземпляры отчетов возвращены не будут.
+                                    То есть, если в запросе не указать элемент year, то в ответе элемент reportInstance (список экземпляров отчета)
+                                    для типа Report будет пустым.
+                                </p>
+                </xsd:documentation>
+                <xsd:documentation xml:lang="en">
+                  <p>Report instances year.</p>
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="FindReportsResponse">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="ru">
+            <p>Ответ на запрос FindReportsRequest.</p>
+          </xsd:documentation>
+          <xsd:documentation xml:lang="en">
+            <p>Response to FindReportsRequest.</p>
+          </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="unbounded" name="report" type="tns:Report">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="ru">Список отчетов.</xsd:documentation>
+                <xsd:documentation xml:lang="en">Reports list.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
       <xsd:simpleType name="Email">
         <xsd:annotation>
           <xsd:documentation xml:lang="ru">Email.</xsd:documentation>
@@ -6677,6 +7506,23 @@
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
+      <xsd:element name="LoginRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="login" type="xsd:string" />
+            <xsd:element name="password" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="LoginResponse">
+        <xsd:complexType />
+      </xsd:element>
+      <xsd:element name="LogoutRequest">
+        <xsd:complexType />
+      </xsd:element>
+      <xsd:element name="LogoutResponse">
+        <xsd:complexType />
+      </xsd:element>
       <xsd:annotation>
         <xsd:documentation xml:lang="ru">
           <p>Если во время работы сервиса произойдет ошибка, то ответ будет содержать элемент detail в котором будет элемент faultDetail. Для дополнительной информации смотрите <xref format="html" href="http://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383507" scope="external">http://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383507</xref>.</p>
@@ -7197,11 +8043,11 @@
             </dlentry>
             <dlentry>
               <dt>500.3.1.28</dt>
-              <dd>Неверный формат номера карты (9-19 цифр).</dd>
+              <dd>Неверный формат номера карты.</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.1.29</dt>
-              <dd>Неверный формат даты истечения срока действия карты.</dd>
+              <dd>Неверный формат даты истечения срока действия карты (MM/YYYY).</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.1.30</dt>
@@ -7218,6 +8064,10 @@
             <dlentry>
               <dt>500.3.1.33</dt>
               <dd>Неверный формат имени владельца карты (латинские буквы, имя и фамилия через пробел).</dd>
+            </dlentry>
+            <dlentry>
+              <dt>500.3.1.34</dt>
+              <dd>Данный запрос не поддерживает работу в одной транзакции (transactional = true). Используйте transactional = false.</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.1</dt>
@@ -7253,7 +8103,7 @@
             </dlentry>
             <dlentry>
               <dt>500.3.2.9</dt>
-              <dd>Платёжный пароль короче 5 символов.</dd>
+              <dd>Длина платежного пароля меньше 5 символов.</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.10</dt>
@@ -7321,7 +8171,7 @@
             </dlentry>
             <dlentry>
               <dt>500.3.2.24</dt>
-              <dd>Укажите номер телефона в международном формате (например, +71234567890).</dd>
+              <dd>Укажите номер телефона в международном формате (например, 71234567890).</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.25</dt>
@@ -8088,11 +8938,11 @@
             </dlentry>
             <dlentry>
               <dt>500.3.1.28</dt>
-              <dd>Wrong card number format. A card number must contain 9-19 digits.</dd>
+              <dd>Wrong card number format.</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.1.29</dt>
-              <dd>Wrong card expiration date.</dd>
+              <dd>Wrong card expiration date (MM/YYYY).</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.1.30</dt>
@@ -8109,6 +8959,10 @@
             <dlentry>
               <dt>500.3.1.33</dt>
               <dd>Wrong card holder name format (latin letters, first name and last name with the space between).</dd>
+            </dlentry>
+            <dlentry>
+              <dt>500.3.1.34</dt>
+              <dd>You cannot use transactional = true in this request.</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.1</dt>
@@ -8212,7 +9066,7 @@
             </dlentry>
             <dlentry>
               <dt>500.3.2.24</dt>
-              <dd>Specify a phone number in the international format. For example, +71234567890.</dd>
+              <dd>Specify a phone number in the international format. For example, 71234567890.</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.25</dt>
@@ -8466,6 +9320,12 @@
   <wsdl:message name="InvoiceRequest">
     <wsdl:part name="InvoiceRequest" element="sch:InvoiceRequest" />
   </wsdl:message>
+  <wsdl:message name="PaymentSystemInfoRequest">
+    <wsdl:part name="PaymentSystemInfoRequest" element="sch:PaymentSystemInfoRequest" />
+  </wsdl:message>
+  <wsdl:message name="PaymentSystemInfoResponse">
+    <wsdl:part name="PaymentSystemInfoResponse" element="sch:PaymentSystemInfoResponse" />
+  </wsdl:message>
   <wsdl:message name="InvoiceBatchRequest">
     <wsdl:part name="InvoiceBatchRequest" element="sch:InvoiceBatchRequest" />
   </wsdl:message>
@@ -8565,6 +9425,18 @@
   <wsdl:message name="VerifyPaymentResponse">
     <wsdl:part name="VerifyPaymentResponse" element="sch:VerifyPaymentResponse" />
   </wsdl:message>
+  <wsdl:message name="VerifyPaymentBatchRequest">
+    <wsdl:part name="VerifyPaymentBatchRequest" element="sch:VerifyPaymentBatchRequest" />
+  </wsdl:message>
+  <wsdl:message name="VerifyPaymentBatchResponse">
+    <wsdl:part name="VerifyPaymentBatchResponse" element="sch:VerifyPaymentBatchResponse" />
+  </wsdl:message>
+  <wsdl:message name="AccountStatementRequest">
+    <wsdl:part name="AccountStatementRequest" element="sch:AccountStatementRequest" />
+  </wsdl:message>
+  <wsdl:message name="AccountStatementResponse">
+    <wsdl:part name="AccountStatementResponse" element="sch:AccountStatementResponse" />
+  </wsdl:message>
   <wsdl:message name="FindAccountByIdRequest">
     <wsdl:part name="FindAccountByIdRequest" element="sch:FindAccountByIdRequest" />
   </wsdl:message>
@@ -8649,6 +9521,12 @@
   <wsdl:message name="CreateProfileResponse">
     <wsdl:part name="CreateProfileResponse" element="sch:CreateProfileResponse" />
   </wsdl:message>
+  <wsdl:message name="CheckProfileRequest">
+    <wsdl:part name="CheckProfileRequest" element="sch:CheckProfileRequest" />
+  </wsdl:message>
+  <wsdl:message name="CheckProfileResponse">
+    <wsdl:part name="CheckProfileResponse" element="sch:CheckProfileResponse" />
+  </wsdl:message>
   <wsdl:message name="EditProfileRequest">
     <wsdl:part name="EditProfileRequest" element="sch:EditProfileRequest" />
   </wsdl:message>
@@ -8727,6 +9605,12 @@
   <wsdl:message name="EditProfileDocumentResponse">
     <wsdl:part name="EditProfileDocumentResponse" element="sch:EditProfileDocumentResponse" />
   </wsdl:message>
+  <wsdl:message name="FindReportsRequest">
+    <wsdl:part name="FindReportsRequest" element="sch:FindReportsRequest" />
+  </wsdl:message>
+  <wsdl:message name="FindReportsResponse">
+    <wsdl:part name="FindReportsResponse" element="sch:FindReportsResponse" />
+  </wsdl:message>
   <wsdl:message name="FindAccountRelationsRequest">
     <wsdl:part name="FindAccountRelationsRequest" element="sch:FindAccountRelationsRequest" />
   </wsdl:message>
@@ -8787,10 +9671,26 @@
   <wsdl:message name="SecureDataResponse">
     <wsdl:part name="SecureDataResponse" element="sch:SecureDataResponse" />
   </wsdl:message>
+  <wsdl:message name="LoginRequest">
+    <wsdl:part name="LoginRequest" element="sch:LoginRequest" />
+  </wsdl:message>
+  <wsdl:message name="LoginResponse">
+    <wsdl:part name="LoginResponse" element="sch:LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="LogoutRequest">
+    <wsdl:part name="LogoutRequest" element="sch:LogoutRequest" />
+  </wsdl:message>
+  <wsdl:message name="LogoutResponse">
+    <wsdl:part name="LogoutResponse" element="sch:LogoutResponse" />
+  </wsdl:message>
   <wsdl:portType name="Messages">
     <wsdl:operation name="Invoice">
       <wsdl:input name="InvoiceRequest" message="tns:InvoiceRequest" />
       <wsdl:output name="InvoiceResponse" message="tns:InvoiceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="PaymentSystemInfo">
+      <wsdl:input name="PaymentSystemInfoRequest" message="tns:PaymentSystemInfoRequest" />
+      <wsdl:output name="PaymentSystemInfoResponse" message="tns:PaymentSystemInfoResponse" />
     </wsdl:operation>
     <wsdl:operation name="InvoiceBatch">
       <wsdl:input name="InvoiceBatchRequest" message="tns:InvoiceBatchRequest" />
@@ -8856,6 +9756,14 @@
       <wsdl:input name="VerifyPaymentRequest" message="tns:VerifyPaymentRequest" />
       <wsdl:output name="VerifyPaymentResponse" message="tns:VerifyPaymentResponse" />
     </wsdl:operation>
+    <wsdl:operation name="VerifyPaymentBatch">
+      <wsdl:input name="VerifyPaymentBatchRequest" message="tns:VerifyPaymentBatchRequest" />
+      <wsdl:output name="VerifyPaymentBatchResponse" message="tns:VerifyPaymentBatchResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="AccountStatement">
+      <wsdl:input name="AccountStatementRequest" message="tns:AccountStatementRequest" />
+      <wsdl:output name="AccountStatementResponse" message="tns:AccountStatementResponse" />
+    </wsdl:operation>
     <wsdl:operation name="FindAccountById">
       <wsdl:input name="FindAccountByIdRequest" message="tns:FindAccountByIdRequest" />
       <wsdl:output name="FindAccountByIdResponse" message="tns:FindAccountByIdResponse" />
@@ -8912,6 +9820,10 @@
       <wsdl:input name="CreateProfileRequest" message="tns:CreateProfileRequest" />
       <wsdl:output name="CreateProfileResponse" message="tns:CreateProfileResponse" />
     </wsdl:operation>
+    <wsdl:operation name="CheckProfile">
+      <wsdl:input name="CheckProfileRequest" message="tns:CheckProfileRequest" />
+      <wsdl:output name="CheckProfileResponse" message="tns:CheckProfileResponse" />
+    </wsdl:operation>
     <wsdl:operation name="EditProfile">
       <wsdl:input name="EditProfileRequest" message="tns:EditProfileRequest" />
       <wsdl:output name="EditProfileResponse" message="tns:EditProfileResponse" />
@@ -8964,6 +9876,10 @@
       <wsdl:input name="EditProfileDocumentRequest" message="tns:EditProfileDocumentRequest" />
       <wsdl:output name="EditProfileDocumentResponse" message="tns:EditProfileDocumentResponse" />
     </wsdl:operation>
+    <wsdl:operation name="FindReports">
+      <wsdl:input name="FindReportsRequest" message="tns:FindReportsRequest" />
+      <wsdl:output name="FindReportsResponse" message="tns:FindReportsResponse" />
+    </wsdl:operation>
     <wsdl:operation name="FindAccountRelations">
       <wsdl:input name="FindAccountRelationsRequest" message="tns:FindAccountRelationsRequest" />
       <wsdl:output name="FindAccountRelationsResponse" message="tns:FindAccountRelationsResponse" />
@@ -9004,6 +9920,14 @@
       <wsdl:input name="SecureDataRequest" message="tns:SecureDataRequest" />
       <wsdl:output name="SecureDataResponse" message="tns:SecureDataResponse" />
     </wsdl:operation>
+    <wsdl:operation name="Login">
+      <wsdl:input name="LoginRequest" message="tns:LoginRequest" />
+      <wsdl:output name="LoginResponse" message="tns:LoginResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="Logout">
+      <wsdl:input name="LogoutRequest" message="tns:LogoutRequest" />
+      <wsdl:output name="LogoutResponse" message="tns:LogoutResponse" />
+    </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="MessagesSoap11" type="tns:Messages">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
@@ -9013,6 +9937,15 @@
         <soap:body use="literal" />
       </wsdl:input>
       <wsdl:output name="InvoiceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PaymentSystemInfo">
+      <soap:operation soapAction="" />
+      <wsdl:input name="PaymentSystemInfoRequest">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="PaymentSystemInfoResponse">
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
@@ -9160,6 +10093,24 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="VerifyPaymentBatch">
+      <soap:operation soapAction="" />
+      <wsdl:input name="VerifyPaymentBatchRequest">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="VerifyPaymentBatchResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AccountStatement">
+      <soap:operation soapAction="" />
+      <wsdl:input name="AccountStatementRequest">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="AccountStatementResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="FindAccountById">
       <soap:operation soapAction="" />
       <wsdl:input name="FindAccountByIdRequest">
@@ -9286,6 +10237,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="CheckProfile">
+      <soap:operation soapAction="" />
+      <wsdl:input name="CheckProfileRequest">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="CheckProfileResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="EditProfile">
       <soap:operation soapAction="" />
       <wsdl:input name="EditProfileRequest">
@@ -9403,6 +10363,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="FindReports">
+      <soap:operation soapAction="" />
+      <wsdl:input name="FindReportsRequest">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="FindReportsResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="FindAccountRelations">
       <soap:operation soapAction="" />
       <wsdl:input name="FindAccountRelationsRequest">
@@ -9490,6 +10459,24 @@
         <soap:body use="literal" />
       </wsdl:input>
       <wsdl:output name="SecureDataResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Login">
+      <soap:operation soapAction="" />
+      <wsdl:input name="LoginRequest">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="LoginResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Logout">
+      <soap:operation soapAction="" />
+      <wsdl:input name="LogoutRequest">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="LogoutResponse">
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
