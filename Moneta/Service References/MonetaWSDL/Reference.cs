@@ -8048,6 +8048,8 @@ namespace Moneta.MonetaWSDL {
         
         private bool searchInArchiveField;
         
+        private string attributeNamesInResponseField;
+        
         public FindOperationsListRequestFilter() {
             this.searchInArchiveField = false;
         }
@@ -8386,6 +8388,18 @@ namespace Moneta.MonetaWSDL {
             set {
                 this.searchInArchiveField = value;
                 this.RaisePropertyChanged("searchInArchive");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
+        public string attributeNamesInResponse {
+            get {
+                return this.attributeNamesInResponseField;
+            }
+            set {
+                this.attributeNamesInResponseField = value;
+                this.RaisePropertyChanged("attributeNamesInResponse");
             }
         }
         
@@ -9559,6 +9573,10 @@ namespace Moneta.MonetaWSDL {
         
         private long incomeTransactionsCountField;
         
+        private decimal incomeLockedBalanceField;
+        
+        private bool incomeLockedBalanceFieldSpecified;
+        
         private decimal expenseAmountField;
         
         private decimal expensesIncludingCommissionField;
@@ -9566,6 +9584,10 @@ namespace Moneta.MonetaWSDL {
         private decimal expensesExtraCommissionField;
         
         private long expenseTransactionsCountField;
+        
+        private decimal expenseLockedBalanceField;
+        
+        private bool expenseLockedBalanceFieldSpecified;
         
         private decimal totalField;
         
@@ -9683,6 +9705,30 @@ namespace Moneta.MonetaWSDL {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+        public decimal incomeLockedBalance {
+            get {
+                return this.incomeLockedBalanceField;
+            }
+            set {
+                this.incomeLockedBalanceField = value;
+                this.RaisePropertyChanged("incomeLockedBalance");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool incomeLockedBalanceSpecified {
+            get {
+                return this.incomeLockedBalanceFieldSpecified;
+            }
+            set {
+                this.incomeLockedBalanceFieldSpecified = value;
+                this.RaisePropertyChanged("incomeLockedBalanceSpecified");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
         public decimal expenseAmount {
             get {
                 return this.expenseAmountField;
@@ -9694,7 +9740,7 @@ namespace Moneta.MonetaWSDL {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
         public decimal expensesIncludingCommission {
             get {
                 return this.expensesIncludingCommissionField;
@@ -9706,7 +9752,7 @@ namespace Moneta.MonetaWSDL {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
         public decimal expensesExtraCommission {
             get {
                 return this.expensesExtraCommissionField;
@@ -9718,7 +9764,7 @@ namespace Moneta.MonetaWSDL {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
         public long expenseTransactionsCount {
             get {
                 return this.expenseTransactionsCountField;
@@ -9730,7 +9776,31 @@ namespace Moneta.MonetaWSDL {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
+        public decimal expenseLockedBalance {
+            get {
+                return this.expenseLockedBalanceField;
+            }
+            set {
+                this.expenseLockedBalanceField = value;
+                this.RaisePropertyChanged("expenseLockedBalance");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool expenseLockedBalanceSpecified {
+            get {
+                return this.expenseLockedBalanceFieldSpecified;
+            }
+            set {
+                this.expenseLockedBalanceFieldSpecified = value;
+                this.RaisePropertyChanged("expenseLockedBalanceSpecified");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
         public decimal total {
             get {
                 return this.totalField;
@@ -9742,7 +9812,7 @@ namespace Moneta.MonetaWSDL {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
         public decimal openingBalance {
             get {
                 return this.openingBalanceField;
@@ -9754,7 +9824,7 @@ namespace Moneta.MonetaWSDL {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
         public decimal closingBalance {
             get {
                 return this.closingBalanceField;
@@ -13490,6 +13560,10 @@ namespace Moneta.MonetaWSDL {
         
         private string publicIdField;
         
+        private long accountIdField;
+        
+        private bool accountIdFieldSpecified;
+        
         private KeyValueAttribute[] attributeField;
         
         /// <remarks/>
@@ -13505,7 +13579,31 @@ namespace Moneta.MonetaWSDL {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("attribute", Order=1)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+        public long accountId {
+            get {
+                return this.accountIdField;
+            }
+            set {
+                this.accountIdField = value;
+                this.RaisePropertyChanged("accountId");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool accountIdSpecified {
+            get {
+                return this.accountIdFieldSpecified;
+            }
+            set {
+                this.accountIdFieldSpecified = value;
+                this.RaisePropertyChanged("accountIdSpecified");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("attribute", Order=2)]
         public KeyValueAttribute[] attribute {
             get {
                 return this.attributeField;

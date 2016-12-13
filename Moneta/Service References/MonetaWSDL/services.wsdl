@@ -3757,6 +3757,30 @@
                       </xsd:documentation>
                     </xsd:annotation>
                   </xsd:element>
+                  <xsd:element minOccurs="0" name="attributeNamesInResponse" type="xsd:string">
+                    <xsd:annotation>
+                      <xsd:documentation xml:lang="ru">
+                        <p>Список свойств операции, разделённый запятыми, которые будут возвращены в ответе.</p>
+                        <p>Стандартные свойства операции передавать не обязательно, потому что они возвращаются всегда.
+                                            Это свойства: modified, statusid, typeid, category, sourceaccountid, sourceamount, sourcecurrencycode,
+                                            targetaccountid, targetamount, targetcurrencycode, description, clienttransaction.
+                                        </p>
+                        <p>Например, если для банковского перевода требуется получить в ответе не все свойства, то можно указать:
+                                            wirebankbik, wirebankaccount, wireusername, customfield:email
+                                        </p>
+                      </xsd:documentation>
+                      <xsd:documentation xml:lang="en">
+                        <p>List of comma separated transaction properties which will be returned in a response.</p>
+                        <p>It is not obligatory to provide standard transaction properties since they are always returned.
+                                            These properties are: modified, statusid, typeid, category, sourceaccountid, sourceamount, sourcecurrencycode,
+                                            targetaccountid, targetamount, targetcurrencycode, description, clienttransaction.
+                                        </p>
+                        <p>For example, in case with bank transfer when it is required to receive not all properties in a response, you can use the following:
+                                            wirebankbik, wirebankaccount, wireusername, customfield:email
+                                        </p>
+                      </xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
@@ -4352,6 +4376,16 @@
                       </xsd:documentation>
                     </xsd:annotation>
                   </xsd:element>
+                  <xsd:element minOccurs="0" name="incomeLockedBalance" type="tns:Money">
+                    <xsd:annotation>
+                      <xsd:documentation xml:lang="ru">
+                        <p>Приход. Заблокированная сумма.</p>
+                      </xsd:documentation>
+                      <xsd:documentation xml:lang="en">
+                        <p>Income. Locked balance.</p>
+                      </xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
                   <xsd:element name="expenseAmount" type="tns:Money">
                     <xsd:annotation>
                       <xsd:documentation xml:lang="ru">Расход. Сумма.</xsd:documentation>
@@ -4377,6 +4411,16 @@
                       </xsd:documentation>
                       <xsd:documentation xml:lang="en">
                         <p>Expenses. Number of transactions.</p>
+                      </xsd:documentation>
+                    </xsd:annotation>
+                  </xsd:element>
+                  <xsd:element minOccurs="0" name="expenseLockedBalance" type="tns:Money">
+                    <xsd:annotation>
+                      <xsd:documentation xml:lang="ru">
+                        <p>Расход. Заблокированная сумма.</p>
+                      </xsd:documentation>
+                      <xsd:documentation xml:lang="en">
+                        <p>Expenses. Locked balance.</p>
                       </xsd:documentation>
                     </xsd:annotation>
                   </xsd:element>
@@ -4623,6 +4667,8 @@
               <li>
                 <b>phone_director</b>. Контактный телефон директора.</li>
               <li>
+                <b>country</b>Страна. Использовать isocode [RUS], isocode2L [RU] или имя [Россия]</li>
+              <li>
                 <b>legal_address</b>. Адрес постоянно действующего органа управления.</li>
               <li>
                 <b>post_address</b>. Почтовый адрес.</li>
@@ -4850,6 +4896,8 @@
                   <b>fio_director</b>. Managing director full name.</li>
                 <li>
                   <b>phone_director</b>. Managing director office phone.</li>
+                <li>
+                  <b>country</b>Country. Use isocode [RUS], isocode2L [RU] or name[Russia]</li>
                 <li>
                   <b>legal_address</b>. Legal address.</li>
                 <li>
@@ -7459,6 +7507,20 @@
                 </xsd:documentation>
               </xsd:annotation>
             </xsd:element>
+            <xsd:element minOccurs="0" name="accountId" type="tns:AccountId">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="ru">
+                  <p>Номер счета.</p>
+                  <p>Поле следует заполнить, если данные этого запроса будут использоваться для проведения финансовой операции.
+                                Например, PaymentRequest, TransferRequest, AuthoriseTransactionRequest, ConfirmTransactionRequest и т.д.
+                                При проведении операции следует указать этот же самый номер счета - для другого счета эти данные использовать нельзя.
+                            </p>
+                </xsd:documentation>
+                <xsd:documentation xml:lang="en">
+                  <p>Account ID.</p>
+                </xsd:documentation>
+              </xsd:annotation>
+            </xsd:element>
             <xsd:element minOccurs="1" maxOccurs="unbounded" name="attribute" type="tns:KeyValueAttribute">
               <xsd:annotation>
                 <xsd:documentation xml:lang="ru">
@@ -7663,7 +7725,7 @@
             </dlentry>
             <dlentry>
               <dt>400.1.10</dt>
-              <dd>Перечисление на заданный счёт получателя невозможно.</dd>
+              <dd>Перечисление на заданный счёт получателя невозможно либо указана неверная сумма.</dd>
             </dlentry>
             <dlentry>
               <dt>400.1.11</dt>
@@ -7712,6 +7774,10 @@
             <dlentry>
               <dt>400.1.22</dt>
               <dd>Выставленный счет к оплате недействителен.</dd>
+            </dlentry>
+            <dlentry>
+              <dt>400.1.23</dt>
+              <dd>Срок действия платежного пароля истек.</dd>
             </dlentry>
             <dlentry>
               <dt>400.2</dt>
@@ -7796,6 +7862,10 @@
             <dlentry>
               <dt>400.2.7.7</dt>
               <dd>Данную операцию могут совершать только идентифицированные пользователи Монета.Ру. Для прохождения упрощенной идентификации укажите в личном кабинете: ФИО, паспортные данные, ИНН, СНИЛС, номер мобильного телефона.</dd>
+            </dlentry>
+            <dlentry>
+              <dt>400.2.7.8</dt>
+              <dd>Оплата с данной карты невозможна. Действует ограничение по стране, банк которой выпустил данную карту.</dd>
             </dlentry>
             <dlentry>
               <dt>400.2.8.1</dt>
@@ -7904,6 +7974,10 @@
             <dlentry>
               <dt>500.1.22</dt>
               <dd>Данные Secure Token не найдены.</dd>
+            </dlentry>
+            <dlentry>
+              <dt>500.1.23</dt>
+              <dd>Обработка невозможна. Не найдены необходимые свойства объекта.</dd>
             </dlentry>
             <dlentry>
               <dt>500.2</dt>
@@ -8035,7 +8109,7 @@
             </dlentry>
             <dlentry>
               <dt>500.3.1.26</dt>
-              <dd>Необходимо ввести дату истечения срока.</dd>
+              <dd>Необходимо ввести срок действия карты.</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.1.27</dt>
@@ -8047,7 +8121,7 @@
             </dlentry>
             <dlentry>
               <dt>500.3.1.29</dt>
-              <dd>Неверный формат даты истечения срока действия карты (MM/YYYY).</dd>
+              <dd>Неверный формат срока действия карты (MM/YYYY).</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.1.30</dt>
@@ -8068,6 +8142,14 @@
             <dlentry>
               <dt>500.3.1.34</dt>
               <dd>Данный запрос не поддерживает работу в одной транзакции (transactional = true). Используйте transactional = false.</dd>
+            </dlentry>
+            <dlentry>
+              <dt>500.3.1.35</dt>
+              <dd>Необходимо ввести владельца карты.</dd>
+            </dlentry>
+            <dlentry>
+              <dt>500.3.1.36</dt>
+              <dd>Для работы с данными полями необходима PCI DSS сертификация.</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.1</dt>
@@ -8283,15 +8365,15 @@
             </dlentry>
             <dlentry>
               <dt>500.3.2.52.1</dt>
-              <dd>Необходим корректный БИК (9 цифр).</dd>
+              <dd>Необходим корректный БИК (9 цифр) в поле "*".</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.52.2</dt>
-              <dd>Номер расчётного счёта не корректный. Введите правильный номер.</dd>
+              <dd>Номер расчётного счёта не корректный в поле "*". Введите правильный номер.</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.52.3</dt>
-              <dd>Указанный счёт предназначен для обслуживания физического лица. Нельзя использовать его в целях приёма платежей.</dd>
+              <dd>Указанный счёт предназначен для обслуживания физического лица в поле "*". Нельзя использовать его в целях приёма платежей.</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.52.4</dt>
@@ -8303,15 +8385,15 @@
             </dlentry>
             <dlentry>
               <dt>500.3.2.52.6</dt>
-              <dd>Необходим корректный КБК (число до 20 знаков).</dd>
+              <dd>Необходим корректный КБК (число до 20 знаков) в поле "*".</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.52.7</dt>
-              <dd>Необходим корректный ОКТМО (8 или 11 значное число).</dd>
+              <dd>Необходим корректный ОКТМО (8 или 11 значное число) в поле "*".</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.52.8</dt>
-              <dd>Необходим корректный КПП (9-значное число).</dd>
+              <dd>Необходим корректный КПП (9-значное число) в поле "*".</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.52.9</dt>
@@ -8319,7 +8401,7 @@
             </dlentry>
             <dlentry>
               <dt>500.3.2.52.10</dt>
-              <dd>Укажите IBAN в корректном формате (от 5 до 40 символов - заглавные латинские буквы и цифры).</dd>
+              <dd>Укажите IBAN в корректном формате в поле "*" (от 5 до 40 символов - заглавные латинские буквы и цифры).</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.53</dt>
@@ -8558,7 +8640,7 @@
             </dlentry>
             <dlentry>
               <dt>400.1.10</dt>
-              <dd>Transferring funds to the specified account is not allowed.</dd>
+              <dd>Transferring funds to the specified account is not allowed or incorrect amount was specified.</dd>
             </dlentry>
             <dlentry>
               <dt>400.1.11</dt>
@@ -8607,6 +8689,10 @@
             <dlentry>
               <dt>400.1.22</dt>
               <dd>Payment invoice is canceled.</dd>
+            </dlentry>
+            <dlentry>
+              <dt>400.1.23</dt>
+              <dd>Payment password is expired.</dd>
             </dlentry>
             <dlentry>
               <dt>400.2</dt>
@@ -8691,6 +8777,10 @@
             <dlentry>
               <dt>400.2.7.7</dt>
               <dd>Only identified MONETA.RU users can perform this type of transaction. To complete simplified identification, specify the following information in your MONETA.RU account: full name, passport details, tax identification number, insurance number of individual ledger account, and mobile phone number.</dd>
+            </dlentry>
+            <dlentry>
+              <dt>400.2.7.8</dt>
+              <dd>Card country is not allowed.</dd>
             </dlentry>
             <dlentry>
               <dt>400.2.8.1</dt>
@@ -8799,6 +8889,10 @@
             <dlentry>
               <dt>500.1.22</dt>
               <dd>Secure token data not found.</dd>
+            </dlentry>
+            <dlentry>
+              <dt>500.1.23</dt>
+              <dd>Cannot process the request because MONETA.RU cannot find the specified object property.</dd>
             </dlentry>
             <dlentry>
               <dt>500.2</dt>
@@ -8963,6 +9057,14 @@
             <dlentry>
               <dt>500.3.1.34</dt>
               <dd>You cannot use transactional = true in this request.</dd>
+            </dlentry>
+            <dlentry>
+              <dt>500.3.1.35</dt>
+              <dd>Card holder name is required.</dd>
+            </dlentry>
+            <dlentry>
+              <dt>500.3.1.36</dt>
+              <dd>You must have PCI DSS certification passed.</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.1</dt>
@@ -9178,15 +9280,15 @@
             </dlentry>
             <dlentry>
               <dt>500.3.2.52.1</dt>
-              <dd>Valid 9-digit BIK is required.</dd>
+              <dd>Valid 9-digit BIK is required in "*" field.</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.52.2</dt>
-              <dd>Settlement account number is not correct. Specify the correct account number.</dd>
+              <dd>Settlement account number is not correct in "*" field. Specify the correct account number.</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.52.3</dt>
-              <dd>You cannot use the settlement account because it is intended for individuals.</dd>
+              <dd>You cannot use the settlement account in "*" field because it is intended for individuals.</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.52.4</dt>
@@ -9202,11 +9304,11 @@
             </dlentry>
             <dlentry>
               <dt>500.3.2.52.7</dt>
-              <dd>Wrong format of Russian Classifier of Municipal Unit Territories. Specify an 8-digit or 11-digit code.</dd>
+              <dd>Wrong format of Russian Classifier of Municipal Unit Territoriesin "*" field. Specify an 8-digit or 11-digit code.</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.52.8</dt>
-              <dd>Wrong format of Tax Registration Reason Code. Specify a 9-digit code.</dd>
+              <dd>Wrong format of Tax Registration Reason Code in "*" field. Specify a 9-digit code.</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.52.9</dt>
@@ -9214,7 +9316,7 @@
             </dlentry>
             <dlentry>
               <dt>500.3.2.52.10</dt>
-              <dd>Wrong IBAN format. Use a string of upper-case Latin characters and digits that contains 5-40 symbols.</dd>
+              <dd>Wrong IBAN format in "*" field. Use a string of upper-case Latin characters and digits that contains 5-40 symbols.</dd>
             </dlentry>
             <dlentry>
               <dt>500.3.2.53</dt>
